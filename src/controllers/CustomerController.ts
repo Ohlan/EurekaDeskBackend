@@ -27,7 +27,7 @@ export const CustomerSignUp = async (req: Request, res: Response, next: NextFunc
 
     const existingCustomer =  await Customer.find({ email: email});
     
-    if(existingCustomer !== null){
+    if(existingCustomer.length > 0){
         return res.status(400).json({message: 'Email already exist!'});
     }
 

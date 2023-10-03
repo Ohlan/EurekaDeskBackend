@@ -16,14 +16,14 @@ export const GenerateOtp = () => {
 export const onRequestOTP = async(otp: number, toPhoneNumber: string) => {
 
     try {
-        const accountSid = "Your Account SID from TWILIO DASHBOARD";
-        const authToken = "YOUR AUTH TOKEN AS I SAID ON VIDEO";
+        const accountSid = 'ACe04da3ae5c68d0340f4cfdacaa89d804';
+        const authToken = '4d6e161bfbfe1d5f338449bcfbf5747f';
         const client = require('twilio')(accountSid, authToken);
     
-        const response = await client.message.create({
+        const response = await client.messages.create({
             body: `Your OTP is ${otp}`,
-            from: 'Your TWILIO PHONE NUMBER YOU CAN GET IT FROM YOUR DASHBOARD',
-            to: `recipient_countrycode${toPhoneNumber}` // recipient phone number // Add country before the number
+            from: '+17853902317',
+            to: `+91${toPhoneNumber}` // recipient phone number // Add country before the number
         })
     
         return response;
