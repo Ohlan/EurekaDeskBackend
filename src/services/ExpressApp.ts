@@ -4,6 +4,8 @@ import path from 'path';
 import {AdminRoute, DeliveryRoute, VandorRoute} from '../routes'
 import { CustomerRoute } from '../routes/CustomerRoute';
 import { ShoppingRoute } from '../routes/ShoppingRoutes';
+import cors from 'cors';
+import { FRONTEND } from '../config';
  
 
 export default async(app: Application) => {
@@ -12,6 +14,13 @@ export default async(app: Application) => {
     app.use(express.urlencoded({ extended: true}))
     
     app.use(express.json());
+
+    var corsOptions = {
+        origin: FRONTEND,
+        optionsSuccessStatus: 200
+    }
+
+    app.use(cors(corsOptions))
  
     const imagePath = path.join(__dirname,'../images');
     
