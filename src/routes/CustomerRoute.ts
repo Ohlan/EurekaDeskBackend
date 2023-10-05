@@ -1,7 +1,6 @@
-import express, { Request, Response, NextFunction } from 'express';
-import { AddToCart, CreateOrder, CreatePayment, CustomerLogin, CustomerSignUp, CustomerVerify, DeleteCart, EditCustomerProfile, GetCart, GetCustomerProfile, GetOrderById, GetOrders, RequestOtp, VerifyOffer } from '../controllers';
+import express from 'express';
+import { AddToCart, CreateOrder, CreatePayment, CustomerSignUp, CustomerVerify, DeleteCart, EditCustomerProfile, GetCart, GetCustomerProfile, GetOrderById, GetOrders, RequestOtp, VerifyOffer } from '../controllers';
 import { Authenticate } from '../middleware';
-import { Offer } from '../models/Offer';
 
 const router = express.Router();
 
@@ -9,14 +8,13 @@ const router = express.Router();
 router.post('/signup', CustomerSignUp)
 
 /* ------------------- Login --------------------- */
-router.post('/login', CustomerLogin)
+// router.post('/login', CustomerLogin)
 
 /* ------------------- Authentication --------------------- */
 router.use(Authenticate);
 
 /* ------------------- Verify Customer Account --------------------- */
 router.patch('/verify', CustomerVerify)
-
 
 /* ------------------- OTP / request OTP --------------------- */
 router.get('/otp', RequestOtp)

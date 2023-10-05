@@ -56,7 +56,7 @@ export const DeliverySignUp = async (req: Request, res: Response, next: NextFunc
         //Generate the Signature
         const signature = await GenerateSignature({
             _id: result._id,
-            email: result.email,
+            phone: result.phone,
             verified: result.verified
         })
         // Send the result
@@ -90,7 +90,7 @@ export const DeliveryLogin = async (req: Request, res: Response, next: NextFunct
 
             const signature = GenerateSignature({
                 _id: deliveryUser._id,
-                email: deliveryUser.email,
+                phone: deliveryUser.phone,
                 verified: deliveryUser.verified
             })
 

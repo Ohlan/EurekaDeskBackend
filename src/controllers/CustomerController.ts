@@ -1,12 +1,12 @@
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import express, { Request, Response, NextFunction } from 'express';
-import { CartItem, CreateCustomerInput, EditCustomerProfileInput, OrderInputs, UserLoginInput } from '../dto';
-import {Customer, DeliveryUser, Food, Vendor} from '../models';
+import { Request, Response, NextFunction } from 'express';
+import { CartItem, CreateCustomerInput, EditCustomerProfileInput, OrderInputs } from '../dto';
+import { Customer, DeliveryUser, Food, Vendor } from '../models';
 import { Offer } from '../models/Offer';
 import { Order } from '../models/Order';
 import { Transaction } from '../models/Transaction';
-import { GenerateOtp, GeneratePassword, GenerateSalt, GenerateSignature, onRequestOTP, ValidatePassword } from '../utility';
+import { GenerateOtp, GenerateSignature, onRequestOTP } from '../utility';
 
 export const CustomerSignUp = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -18,93 +18,86 @@ export const CustomerSignUp = async (req: Request, res: Response, next: NextFunc
         return res.status(400).json(validationError);
     }
 
-    const { email, phone, password } = customerInputs;
-
-    const salt = await GenerateSalt();
-    const userPassword = await GeneratePassword(password, salt);
+    const { phone } = customerInputs;
 
     const { otp, expiry } = GenerateOtp();
 
-    const existingCustomer =  await Customer.find({ email: email});
+    const existingCustomer =  await Customer.findOne({ phone: phone});
     
-    if(existingCustomer.length > 0){
-        return res.status(400).json({message: 'Email already exist!'});
+    if(!existingCustomer){
+        await Customer.create({
+            email: '',
+            phone: phone,
+            otp: otp,
+            otp_expiry: expiry,
+            firstName: '',
+            lastName: '',
+            address: '',
+            verified: false,
+            lat: 0,
+            lng: 0,
+            orders: []
+        })
     }
 
-    const result = await Customer.create({
-        email: email,
-        password: userPassword,
-        salt: salt,
-        phone: phone,
-        otp: otp,
-        otp_expiry: expiry,
-        firstName: '',
-        lastName: '',
-        address: '',
-        verified: false,
-        lat: 0,
-        lng: 0,
-        orders: []
-    })
+    const result = await Customer.findOne({ phone: phone});
 
     if(result){
-        // send OTP to customer
-        await onRequestOTP(otp, phone);
-        
-        //Generate the Signature
+        result.otp = otp
+        result.otp_expiry = expiry
+        await result.save()
+
         const signature = await GenerateSignature({
             _id: result._id,
-            email: result.email,
+            phone: result.phone,
             verified: result.verified
         })
-        // Send the result
-        return res.status(201).json({signature, verified: result.verified, email: result.email})
-
+        // send OTP to customer
+        await onRequestOTP(otp, phone);
+        return res.status(201).json({signature, phone: phone, verified: result.verified})
     }
 
-    return res.status(400).json({ msg: 'Error while creating user'});
-
+    return res.status(400).json({ msg: 'Error while logging in'});
 
 }
 
-export const CustomerLogin = async (req: Request, res: Response, next: NextFunction) => {
+// export const CustomerLogin = async (req: Request, res: Response, next: NextFunction) => {
 
     
-    const customerInputs = plainToClass(UserLoginInput, req.body);
+//     const customerInputs = plainToClass(UserLoginInput, req.body);
 
-    const validationError = await validate(customerInputs, {validationError: { target: true}})
+//     const validationError = await validate(customerInputs, {validationError: { target: true}})
 
-    if(validationError.length > 0){
-        return res.status(400).json(validationError);
-    }
+//     if(validationError.length > 0){
+//         return res.status(400).json(validationError);
+//     }
 
-    const { email, password } = customerInputs;
-    const customer = await Customer.findOne({ email: email});
-    if(customer){
-        const validation = await ValidatePassword(password, customer.password, customer.salt);
+//     const { email, password } = customerInputs;
+//     const customer = await Customer.findOne({ email: email});
+//     if(customer){
+//         const validation = await ValidatePassword(password, customer.password, customer.salt);
         
-        if(validation){
+//         if(validation){
 
-            const signature = GenerateSignature({
-                _id: customer._id,
-                email: customer.email,
-                verified: customer.verified
-            })
+//             const signature = GenerateSignature({
+//                 _id: customer._id,
+//                 email: customer.email,
+//                 verified: customer.verified
+//             })
 
-            return res.status(200).json({
-                signature,
-                email: customer.email,
-                verified: customer.verified
-            })
-        }
-    }
+//             return res.status(200).json({
+//                 signature,
+//                 email: customer.email,
+//                 verified: customer.verified
+//             })
+//         }
+//     }
 
-    return res.json({ msg: 'Error With Signup'});
+//     return res.json({ msg: 'Error With login'});
 
-}
+// }
 
 export const CustomerVerify = async (req: Request, res: Response, next: NextFunction) => {
-
 
     const { otp } = req.body;
     const customer = req.user;
@@ -119,13 +112,13 @@ export const CustomerVerify = async (req: Request, res: Response, next: NextFunc
 
                 const signature = GenerateSignature({
                     _id: updatedCustomerResponse._id,
-                    email: updatedCustomerResponse.email,
+                    phone: updatedCustomerResponse.phone,
                     verified: updatedCustomerResponse.verified
                 })
 
                 return res.status(200).json({
                     signature,
-                    email: updatedCustomerResponse.email,
+                    phone: updatedCustomerResponse.phone,
                     verified: updatedCustomerResponse.verified
                 })
             }
@@ -178,6 +171,8 @@ export const GetCustomerProfile = async (req: Request, res: Response, next: Next
             return res.status(201).json(profile);
         }
 
+        return res.status(400).json({ msg: 'Please login to view profile'});
+
     }
     return res.status(400).json({ msg: 'Error while Fetching Profile'});
 
@@ -196,7 +191,7 @@ export const EditCustomerProfile = async (req: Request, res: Response, next: Nex
         return res.status(400).json(validationError);
     }
 
-    const { firstName, lastName, address } = customerInputs;
+    const { firstName, lastName, address, email } = customerInputs;
 
     if(customer){
         
@@ -206,6 +201,7 @@ export const EditCustomerProfile = async (req: Request, res: Response, next: Nex
             profile.firstName = firstName;
             profile.lastName = lastName;
             profile.address = address;
+            profile.email = email
             const result = await profile.save()
             
             return res.status(201).json(result);

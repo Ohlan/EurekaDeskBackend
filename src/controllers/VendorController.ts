@@ -21,7 +21,7 @@ export const VendorLogin = async (req: Request,res: Response, next: NextFunction
 
             const signature = await GenerateSignature({
                 _id: existingUser._id,
-                email: existingUser.email,
+                phone: existingUser.phone,
                 name: existingUser.name
             })
             return res.json(signature);
