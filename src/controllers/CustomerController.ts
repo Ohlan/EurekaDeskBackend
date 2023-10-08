@@ -1,7 +1,7 @@
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Request, Response, NextFunction } from 'express';
-import { CartItem, CreateCustomerInput, EditCustomerProfileInput, OrderInputs } from '../dto';
+import { CartItem, EditCustomerProfileInput, OrderInputs, UserVerifyInput } from '../dto';
 import { Customer, DeliveryUser, Food, Vendor } from '../models';
 import { Offer } from '../models/Offer';
 import { Order } from '../models/Order';
@@ -10,15 +10,7 @@ import { GenerateOtp, GenerateSignature, onRequestOTP } from '../utility';
 
 export const CustomerSignUp = async (req: Request, res: Response, next: NextFunction) => {
 
-    const customerInputs = plainToClass(CreateCustomerInput, req.body);
-
-    const validationError = await validate(customerInputs, {validationError: { target: true}})
-
-    if(validationError.length > 0){
-        return res.status(400).json(validationError);
-    }
-
-    const { phone } = customerInputs;
+    const { phone } = req.body;
 
     const { otp, expiry } = GenerateOtp();
 
@@ -47,14 +39,14 @@ export const CustomerSignUp = async (req: Request, res: Response, next: NextFunc
         result.otp_expiry = expiry
         await result.save()
 
-        const signature = await GenerateSignature({
-            _id: result._id,
-            phone: result.phone,
-            verified: result.verified
-        })
+        // const signature = await GenerateSignature({
+        //     _id: result._id,
+        //     phone: result.phone,
+        //     verified: result.verified
+        // })
         // send OTP to customer
         await onRequestOTP(otp, phone);
-        return res.status(201).json({signature, phone: phone, verified: result.verified})
+        return res.status(201).json({phone: phone, verified: result.verified})
     }
 
     return res.status(400).json({ msg: 'Error while logging in'});
@@ -99,18 +91,26 @@ export const CustomerSignUp = async (req: Request, res: Response, next: NextFunc
 
 export const CustomerVerify = async (req: Request, res: Response, next: NextFunction) => {
 
-    const { otp } = req.body;
-    const customer = req.user;
+    const customerInputs = plainToClass(UserVerifyInput, req.body);
 
-    if(customer){
-        const profile = await Customer.findById(customer._id);
+    const validationError = await validate(customerInputs, {validationError: { target: true}})
+
+    if(validationError.length > 0){
+        return res.status(400).json(validationError);
+    }
+    // const customer = req.user;
+
+    const {phone, otp} = customerInputs;
+
+    // if(customer){
+        const profile = await Customer.findOne({phone: phone});
         if(profile){
             if(profile.otp === parseInt(otp) && profile.otp_expiry >= new Date()){
                 profile.verified = true;
 
                 const updatedCustomerResponse = await profile.save();
 
-                const signature = GenerateSignature({
+                const signature = await GenerateSignature({
                     _id: updatedCustomerResponse._id,
                     phone: updatedCustomerResponse.phone,
                     verified: updatedCustomerResponse.verified
@@ -125,18 +125,18 @@ export const CustomerVerify = async (req: Request, res: Response, next: NextFunc
             
         }
 
-    }
+    // }
 
     return res.status(400).json({ msg: 'Unable to verify Customer'});
 }
 
 export const RequestOtp = async (req: Request, res: Response, next: NextFunction) => {
 
-    const customer = req.user;
+    const {phone} = req.body;
 
-    if(customer){
+    // if(customer){
 
-        const profile = await Customer.findById(customer._id);
+        const profile = await Customer.findOne({phone: phone});
 
         if(profile){
             const { otp, expiry } = GenerateOtp();
@@ -153,7 +153,7 @@ export const RequestOtp = async (req: Request, res: Response, next: NextFunction
             return res.status(200).json({ message: 'OTP sent to your registered Mobile Number!'})
 
         }
-    }
+    // }
 
     return res.status(400).json({ msg: 'Error with Requesting OTP'});
 }

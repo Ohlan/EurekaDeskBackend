@@ -13,6 +13,13 @@ export class UserLoginInput {
     password: string;
 }
 
+export class UserVerifyInput {
+    @Length(10, 10)
+    phone: string;
+    
+    @Length(6, 6)
+    otp: string;
+}
 
 export class EditCustomerProfileInput {
    

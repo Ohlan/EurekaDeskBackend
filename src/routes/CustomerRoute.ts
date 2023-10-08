@@ -10,14 +10,14 @@ router.post('/signup', CustomerSignUp)
 /* ------------------- Login --------------------- */
 // router.post('/login', CustomerLogin)
 
-/* ------------------- Authentication --------------------- */
-router.use(Authenticate);
+/* ------------------- OTP / request OTP --------------------- */
+router.get('/otp', RequestOtp)
 
 /* ------------------- Verify Customer Account --------------------- */
 router.patch('/verify', CustomerVerify)
 
-/* ------------------- OTP / request OTP --------------------- */
-router.get('/otp', RequestOtp)
+/* ------------------- Authentication --------------------- */
+router.use(Authenticate);
 
 /* ------------------- Profile --------------------- */
 router.get('/profile', GetCustomerProfile)
