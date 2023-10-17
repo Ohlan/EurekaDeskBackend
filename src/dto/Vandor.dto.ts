@@ -10,10 +10,8 @@ export class CreateVandorInput{
 
     foodType: [string];
 
-    @Length(6, 7)
     pincode: string;
 
-    @Length(5, 50)
     address: string;
 
     @Length(10, 10)
@@ -30,7 +28,6 @@ export class EditVendorInput{
     @Length(4, 15)
     name: string;
 
-    @Length(5, 50)
     address: string;
 
     @Length(10, 10)

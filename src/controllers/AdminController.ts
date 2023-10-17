@@ -19,13 +19,11 @@ export const CreateVandor = async (req: Request, res: Response, next: NextFuncti
 
     const { name, address, pincode, foodType, email, password, ownerName, phone }  = <CreateVandorInput>req.body;
     
-
     const existingVandor = await FindVendor('', email);
 
     if(existingVandor !== null){
         return res.json({ "message": "A vandor is exist with this email ID"})
     }
-
 
     //generate a salt
 

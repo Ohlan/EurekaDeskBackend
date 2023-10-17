@@ -3,3 +3,4 @@ export const APP_SECRET = '238745623hsdf'
 
 export const PORT = process.env.PORT || 8000;
 export const FRONTEND = process.env.FRONTEND || 'http://localhost:3000'
+export const FRONTEND_SECONDARY = process.env.FRONTEND || 'http://localhost:3001'

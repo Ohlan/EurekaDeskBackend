@@ -6,3 +6,16 @@ export interface CreateFoodInput {
     readyTime: string;
     price: number;
 }
+
+export interface CreateCategoryInput {
+    name: string;
+    description: string;
+    subCategories: any;
+    allFoods: any;
+}
+
+export interface CreateSubCategoryInput {
+    name: string;
+    description: string;
+    allFoods: any;
+}

@@ -1,0 +1,1088 @@
+{
+	"info": {
+		"_postman_id": "325fa921-0e6c-4346-a515-b05212a65b03",
+		"name": "EurekaDeskApis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29921401"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Admin - Create Restaurant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Tandoori point\",\n    \"address\": \"Rohtak, Haryana\",\n    \"pincode\": \"124501\",\n    \"foodType\": [\"veg\",\"non-veg\"],\n    \"email\": \"tandooripoint@org.com\",\n    \"password\":\"abcd1234\",\n    \"ownerName\": \"ohlan\",\n    \"phone\": \"9729470221\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/admin/vendor",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"admin",
+								"vendor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Get Restaurant By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/admin/vendor/651a935d1e860590ca784d53",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"admin",
+								"vendor",
+								"651a935d1e860590ca784d53"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Top Restaurants",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/food/top/restaurants",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"food",
+								"top",
+								"restaurants"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Get All Restaurants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/admin/vendors",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"admin",
+								"vendors"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Restaurant",
+			"item": [
+				{
+					"name": "Restaurant - Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/profile",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Login",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"tandooripoint@org.com\",\n    \"password\": \"abcd1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/login",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Update Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Tandoori point\",\n    \"address\": \"Rohtak, Haryana\",\n    \"foodType\": [\"veg\",\"non-veg\"],\n    \"phone\": \"9729470221\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/profile",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurent - Add Food",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/food",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"food"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurent - Get All Food Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/food",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"food"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Change Serviceability",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lat\":\"77\",\n    \"lng\":\"65\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/service",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Update Cover Image",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/Users/pushpendrakumar/Documents/images/top-view-table-full-delicious-food-composition_23-2149141353.avif"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/coverimage",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"coverimage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Add Offer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"offerType\": \"seasonal\",\n    \"vendors\": [\"651a935d1e860590ca784d53\"],\n    \"title\": \"Hurray 50% off\",\n    \"description\": \"loyality give aways\",\n    \"minValue\": 0,\n    \"offerAmount\": 200,\n    \"promocode\": \"LOYAL200\",\n    \"promoType\": \"discount\",\n    \"bank\": [\"hdfc\", \"sbi\"],\n    \"pincode\": \"124501\",\n    \"isActive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/offer",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"offer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Edit Offer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"offerType\": \"seasonal\",\n    \"vendors\": [\"651a935d1e860590ca784d53\"],\n    \"title\": \"Hurray 50% off\",\n    \"description\": \"loyality give aways\",\n    \"minValue\": 0,\n    \"offerAmount\": 200,\n    \"promocode\": \"LOYAL200\",\n    \"promoType\": \"discount\",\n    \"bank\": [\"hdfc\", \"sbi\"],\n    \"pincode\": \"124501\",\n    \"isActive\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/offer/651aa55dd71bd495af30a11e",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"offer",
+								"651aa55dd71bd495af30a11e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get Offers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/offers",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"offers"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOTM1ZDFlODYwNTkwY2E3ODRkNTMiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJuYW1lIjoiVGFuZG9vcmkgcG9pbnQiLCJpYXQiOjE2OTc1MzA5MDgsImV4cCI6MTcwNTMwNjkwOH0.zZ4lXsDoBau2WENbTaeq8_FaRtzZzqbK0E7JfrM8vvI",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User - Authentication",
+			"item": [
+				{
+					"name": "User - Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"9729470221\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/signup",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"pushpenderohlan@gmail.com\",\n\t\"password\": \"abcd@1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/login",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Edit Profile",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Pushpendra\",\n    \"lastName\": \"Ohlan\",\n\t\"address\": \"Rohtak, 124501\",\n    \"email\":\"ohlanpushpender@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/profile",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/profile/",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"profile",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Verify",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"9729470221\",\n\t\"otp\": \"403901\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/verify",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - OTP",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"9729470221\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/otp",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"otp"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFmODY3NjRlZWI4ODY4YTRlMTVkNjciLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk2NzM4OTU4LCJleHAiOjE3MDQ1MTQ5NTh9.zkw_xgad3xufLYAhk6pUgraqQW9W9Atu_PGeJyI5HUY",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Food",
+			"item": [
+				{
+					"name": "Foods - View",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/offers",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"offers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - in 30 Min",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/foods-in-30-min/124501",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"foods-in-30-min",
+								"124501"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - form Specific restaurant",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://online-foods.herokuapp.com/food/restaurant/5ec01a8cc37246066220a635",
+							"protocol": "https",
+							"host": [
+								"online-foods",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"food",
+								"restaurant",
+								"5ec01a8cc37246066220a635"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - Details by ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://online-foods.herokuapp.com/food/5ec01c2c6b0ad806dd79c3e1",
+							"protocol": "https",
+							"host": [
+								"online-foods",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"food",
+								"5ec01c2c6b0ad806dd79c3e1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - Availability",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://online-foods.herokuapp.com/food/availability/400012",
+							"protocol": "https",
+							"host": [
+								"online-foods",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"food",
+								"availability",
+								"400012"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - Search",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/search/124501",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"search",
+								"124501"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - Create Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cart\": [\n     {\n        \"_id\": \"651a9ea7d71bd495af30a110\",\n        \"unit\": 3\n     },\n     {\n        \"_id\": \"651a9ee3d71bd495af30a115\",\n        \"unit\": 1\n     }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/create-order",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"create-order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - View Orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjllM2RkY2ZkM2E0MDAwMjRkZTVmMjkiLCJlbWFpbCI6ImdvZ29pQGNvZGVyZ29nb2kuY29tIiwiaWF0IjoxNjA1MjY3MDIyLCJleHAiOjE2MTMwNDMwMjJ9.zPxKu-dIB1kb5-p5SrgJoJtmgIW5rCsKXiVcWafcVMs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cart\": [\n        {\n        \"_id\": \"5ec01c2c6b0ad806dd79c3e1\",\n        \"unit\": 2\n     },\n     {\n        \"_id\": \"5ec0c77a43434c07314cdf63\",\n        \"unit\": 3\n     },\n     {\n        \"_id\": \"5ec0c7b943434c07314cdf64\",\n        \"unit\": 1\n     }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/user/order/7493",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"user",
+								"order",
+								"7493"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOGNlODFlODYwNTkwY2E3ODRkNDciLCJlbWFpbCI6InB1c2hwZW5kZXJvaGxhbkBnbWFpbC5jb20iLCJ2ZXJpZmllZCI6ZmFsc2UsImlhdCI6MTY5NjIzODgyNiwiZXhwIjoxNzA0MDE0ODI2fQ.Zm5myZ6f6irQZ50IWEGIkX31jyN6fCFBjnSOyCE5SiQ",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "User - Order",
+			"item": [
+				{
+					"name": "User - View Order Details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/user/order/6065a2f62aad9fb177392993",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"user",
+								"order",
+								"6065a2f62aad9fb177392993"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - View Orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/user/order/",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"user",
+								"order",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Remove From Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/cart/",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Add To Cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"651a9ea7d71bd495af30a110\",\n    \"unit\": 6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/cart/",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Add New Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZWMwZDJiZjRmNTAxMTA5NjZlMzg1NWIiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJpYXQiOjE1ODk2OTY1MDQsImV4cCI6MTU5NzQ3MjUwNH0.qoIKI6UO8PuFIOqe8A6r4Lm32YgPUFfwTz1DhPK2srI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://online-foods.herokuapp.com/user/add-order",
+							"protocol": "https",
+							"host": [
+								"online-foods",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"user",
+								"add-order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - View Cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/cart",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOGNlODFlODYwNTkwY2E3ODRkNDciLCJlbWFpbCI6InB1c2hwZW5kZXJvaGxhbkBnbWFpbC5jb20iLCJ2ZXJpZmllZCI6ZmFsc2UsImlhdCI6MTY5NjIzODgyNiwiZXhwIjoxNzA0MDE0ODI2fQ.Zm5myZ6f6irQZ50IWEGIkX31jyN6fCFBjnSOyCE5SiQ",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZmIzMzc4M2JmMDRhZjBjYzkyMzMyNWMiLCJlbWFpbCI6ImNnQGdtYWlsLmNvbSIsInZlcmlmaWVkIjp0cnVlLCJpYXQiOjE2MTcyNzMxMDQsImV4cCI6MTYyNTA0OTEwNH0.ebQ_A49_ZB1cm8awOJiX5AFITHYXN6xw393SCv7-CUE",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

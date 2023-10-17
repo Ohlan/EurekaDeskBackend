@@ -1,7 +1,7 @@
 
 import {  Request, Response ,NextFunction } from 'express';
-import { CreateFoodInput, CreateOfferInputs, EditVendorInput, VendorLoginInput } from '../dto'
-import { Food } from '../models';
+import { CreateCategoryInput, CreateFoodInput, CreateOfferInputs, EditVendorInput, VendorLoginInput } from '../dto'
+import { Category, Food } from '../models';
 import { Offer } from '../models/Offer';
 import { Order } from '../models/Order';
 import { GenerateSignature, ValidatePassword } from '../utility';
@@ -143,9 +143,9 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
 
        if(vendor !== null){
 
-            const files = req.files as [Express.Multer.File];
+            // const files = req.files as [Express.Multer.File];
 
-            const images = files.map((file: Express.Multer.File) => file.filename);
+            // const images = files.map((file: Express.Multer.File) => file.filename);
             
             const food = await Food.create({
                 vendorId: vendor._id,
@@ -155,10 +155,10 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
                 price: price,
                 rating: 0,
                 readyTime: readyTime,
-                foodType: foodType,
-                images: images
+                foodType: foodType
             })
-            
+            // const categoryRef = await Category.findOne({ name: category})
+            // categoryRef.allFoods.push(food)
             vendor.foods.push(food);
             const result = await vendor.save();
             return res.json(result);
@@ -367,4 +367,63 @@ export const EditOffer = async (req: Request, res: Response, next: NextFunction)
 
 }
 
+export const AddCategory = async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+
+    const { name, description } = <CreateCategoryInput>req.body;
+     
+    if(user){
+
+       const vendor = await FindVendor(user._id);
+
+       if(vendor !== null){
+
+            const files = req.files as [Express.Multer.File];
+
+            const images = files.map((file: Express.Multer.File) => file.filename);
+            
+            const category = await Category.create({
+                vendorId: vendor._id,
+                name: name,
+                description: description,
+                images: images
+            })
+            vendor.categories.push(category);
+            return res.json(category);
+       }
+
+    }
+    return res.json({'message': 'Unable to Update vendor profile '})
+}
+
+export const AddTable = async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+
+    const { name, description } = <CreateCategoryInput>req.body;
+     
+    if(user){
+
+       const vendor = await FindVendor(user._id);
+
+       if(vendor !== null){
+
+            const files = req.files as [Express.Multer.File];
+
+            const images = files.map((file: Express.Multer.File) => file.filename);
+            
+            const category = await Category.create({
+                vendorId: vendor._id,
+                name: name,
+                description: description,
+                images: images
+            })
+            vendor.categories.push(category);
+            return res.json(category);
+       }
+
+    }
+    return res.json({'message': 'Unable to Update vendor profile '})
+}
 
