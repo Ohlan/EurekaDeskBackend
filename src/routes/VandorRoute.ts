@@ -18,7 +18,7 @@ const imageStorage = multer.diskStorage({
 const images = multer({ storage: imageStorage}).array('images', 10);
 
 
-router.get('/login', VendorLogin);
+router.post('/login', VendorLogin);
 
 router.use(Authenticate)
 router.get('/profile', GetVendorProfile);
