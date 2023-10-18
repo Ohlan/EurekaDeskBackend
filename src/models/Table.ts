@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 
 interface TableDoc extends Document {
 
+    vendorId: string;
     tableNumber: string;
     capacity: string;
     isFree: boolean;
@@ -10,6 +11,7 @@ interface TableDoc extends Document {
 
 
 const TableSchema = new Schema({
+    vendorId: {type: String, required: true},
     tableNumber:{ type: String, required: true},
     capacity: { type: String, required: true},
     isFree: { type: Boolean},

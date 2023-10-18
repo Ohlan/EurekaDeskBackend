@@ -6,6 +6,8 @@ import { Offer } from '../models/Offer';
 import { Order } from '../models/Order';
 import { GenerateSignature, ValidatePassword } from '../utility';
 import { FindVendor } from './AdminController';
+import { CreateTableInputs, UpdateTableInputs } from '../dto/Table.dto';
+import { Table } from '../models/Table';
 
 
 export const VendorLogin = async (req: Request,res: Response, next: NextFunction) => {
@@ -130,6 +132,52 @@ export const UpdateVendorService = async (req: Request,res: Response, next: Next
 
 }
 
+export const AddCategory = async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+
+    const { name, description } = <CreateCategoryInput>req.body;
+     
+    if(user){
+
+       const vendor = await FindVendor(user._id);
+
+       if(vendor !== null){
+
+            // const files = req.files as [Express.Multer.File];
+
+            // const images = files.map((file: Express.Multer.File) => file.filename);
+            
+            const category = await Category.create({
+                vendorId: vendor._id,
+                name: name,
+                description: description,
+                // images: images
+            })
+            vendor.categories.push(category);
+            const result = await vendor.save();
+            return res.json(result);
+       }
+
+    }
+    return res.json({'message': 'Unable to add category'})
+}
+
+export const GetCategories = async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+ 
+    if(user){
+
+       const categories = await Category.find({ vendorId: user._id});
+
+       if(categories !== null){
+            return res.json(categories);
+       }
+
+    }
+    return res.json({'message': 'Categories not found!'})
+}
 
 export const AddFood = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -155,10 +203,12 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
                 price: price,
                 rating: 0,
                 readyTime: readyTime,
+                // images: images,
                 foodType: foodType
             })
-            // const categoryRef = await Category.findOne({ name: category})
-            // categoryRef.allFoods.push(food)
+            const categoryRef = await Category.findOne({ vendorId: user._id, name: category})
+            categoryRef.allFoods.push(food)
+            await categoryRef.save();
             vendor.foods.push(food);
             const result = await vendor.save();
             return res.json(result);
@@ -367,63 +417,70 @@ export const EditOffer = async (req: Request, res: Response, next: NextFunction)
 
 }
 
-export const AddCategory = async (req: Request, res: Response, next: NextFunction) => {
-
-    const user = req.user;
-
-    const { name, description } = <CreateCategoryInput>req.body;
-     
-    if(user){
-
-       const vendor = await FindVendor(user._id);
-
-       if(vendor !== null){
-
-            const files = req.files as [Express.Multer.File];
-
-            const images = files.map((file: Express.Multer.File) => file.filename);
-            
-            const category = await Category.create({
-                vendorId: vendor._id,
-                name: name,
-                description: description,
-                images: images
-            })
-            vendor.categories.push(category);
-            return res.json(category);
-       }
-
-    }
-    return res.json({'message': 'Unable to Update vendor profile '})
-}
-
 export const AddTable = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = req.user;
 
-    const { name, description } = <CreateCategoryInput>req.body;
+    const { tableNumber, capacity } = <CreateTableInputs>req.body;
      
     if(user){
 
        const vendor = await FindVendor(user._id);
 
        if(vendor !== null){
-
-            const files = req.files as [Express.Multer.File];
-
-            const images = files.map((file: Express.Multer.File) => file.filename);
             
-            const category = await Category.create({
+            const table = await Table.create({
                 vendorId: vendor._id,
-                name: name,
-                description: description,
-                images: images
+                tableNumber: tableNumber,
+                capacity: capacity
             })
-            vendor.categories.push(category);
-            return res.json(category);
+            return res.json(table);
        }
 
     }
-    return res.json({'message': 'Unable to Update vendor profile '})
+    return res.json({'message': 'Unable to add table'})
+}
+
+export const UpdateTable = async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+
+    const { tableNumber, isFree, currentOrder } = <UpdateTableInputs>req.body;
+     
+    if(user){
+
+        const requiredTable = await Table.findOne({vendorId: user._id, tableNumber: tableNumber});
+
+        if(requiredTable !== null){
+ 
+            requiredTable.isFree = isFree;
+            requiredTable.currentOrder.push;
+
+            for (var foodItem of currentOrder) {
+                requiredTable.currentOrder.push(foodItem)
+              }
+
+            const saveResult = await requiredTable.save();
+ 
+            return res.json(saveResult);
+        }
+ 
+     }
+     return res.json({'message': 'Unable to update table details '})
+}
+
+export const GetTables = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+ 
+    if(user){
+
+       const tables = await Table.find({ vendorId: user._id});
+
+       if(tables !== null){
+            return res.json(tables);
+       }
+
+    }
+    return res.json({'message': 'Tables not found!'})
 }
 

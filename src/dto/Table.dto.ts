@@ -15,6 +15,9 @@ export class CreateTableInputs {
 
 export class UpdateTableInputs {
 
+    @Length(1,100)
+    tableNumber: string;
+
     isFree: boolean;
 
     currentOrder: [any];

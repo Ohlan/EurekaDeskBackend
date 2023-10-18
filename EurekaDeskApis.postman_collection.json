@@ -189,6 +189,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"blue lagoon\",\n  \"description\": \"Sample food description.\",\n  \"category\": \"cocktail\",\n  \"foodType\": \"Sample food type\",\n  \"readyTime\": \"15\",\n  \"price\": 12.99\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{OFA_BASE}}/vendor/food",
 							"host": [
@@ -347,6 +356,123 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Restaurant - Add table",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tableNumber\": \"1\",\n    \"capacity\": \"3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/table",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"table"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Update table",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tableNumber\": \"1\",\n    \"isFree\": false,\n    \"currentOrder\": [\"651a9ea7d71bd495af30a110\", \"651a9ee3d71bd495af30a115\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/table",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"table"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get tables",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/table",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"table"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Add category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"cocktail\",\n    \"description\": \"tasty and healthy\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/category",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/category",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"category"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -354,7 +480,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOTM1ZDFlODYwNTkwY2E3ODRkNTMiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJuYW1lIjoiVGFuZG9vcmkgcG9pbnQiLCJpYXQiOjE2OTc1MzA5MDgsImV4cCI6MTcwNTMwNjkwOH0.zZ4lXsDoBau2WENbTaeq8_FaRtzZzqbK0E7JfrM8vvI",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOTM1ZDFlODYwNTkwY2E3ODRkNTMiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJuYW1lIjoiVGFuZG9vcmkgcG9pbnQiLCJpYXQiOjE2OTc1NzE3MDMsImV4cCI6MTcwNTM0NzcwM30.saD9iU30JbbfqiTuuPpLlOd8CFEpZrUVBqjk0QGx7l4",
 						"type": "string"
 					}
 				]
@@ -674,12 +800,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://online-foods.herokuapp.com/food/5ec01c2c6b0ad806dd79c3e1",
-							"protocol": "https",
+							"raw": "{{OFA_BASE}}/food/5ec01c2c6b0ad806dd79c3e1",
 							"host": [
-								"online-foods",
-								"herokuapp",
-								"com"
+								"{{OFA_BASE}}"
 							],
 							"path": [
 								"food",

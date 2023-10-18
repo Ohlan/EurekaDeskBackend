@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { AddCategory, AddFood, AddOffer, EditOffer, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetVendorProfile, ProcessOrder, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin } from '../controllers';
+import { AddCategory, AddFood, AddOffer, AddTable, EditOffer, GetCategories, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin } from '../controllers';
 import { Authenticate } from '../middleware';
 import multer from 'multer';
 import { AddOnResultContext } from 'twilio/lib/rest/api/v2010/account/recording/addOnResult';
@@ -26,11 +26,14 @@ router.patch('/profile', UpdateVendorProfile);
 router.patch('/coverimage', images, UpdateVendorCoverImage);
 router.patch('/service', UpdateVendorService);
 
+router.post('/category', images, AddCategory);
+router.get('/category', GetCategories);
 router.post('/food', images, AddFood);
 router.get('/food', GetFoods)
 
-router.post('/categories', images, AddCategory);
-
+router.post('/table', AddTable);
+router.patch('/table', UpdateTable);
+router.get('/table', GetTables)
 
 router.get('/orders', GetOrders);
 router.put('/order/:id/process', ProcessOrder);
