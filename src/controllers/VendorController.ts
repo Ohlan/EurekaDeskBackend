@@ -26,7 +26,7 @@ export const VendorLogin = async (req: Request,res: Response, next: NextFunction
                 phone: existingUser.phone,
                 name: existingUser.name
             })
-            return res.json( {signature} );
+            return res.json({signature} );
         }
     }
 
@@ -458,7 +458,7 @@ export const UpdateTable = async (req: Request, res: Response, next: NextFunctio
 
             for (var foodItem of currentOrder) {
                 requiredTable.currentOrder.push(foodItem)
-              }
+            }
 
             const saveResult = await requiredTable.save();
  

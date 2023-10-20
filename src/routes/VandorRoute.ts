@@ -2,7 +2,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import { AddCategory, AddFood, AddOffer, AddTable, EditOffer, GetCategories, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin } from '../controllers';
 import { Authenticate } from '../middleware';
 import multer from 'multer';
-import { AddOnResultContext } from 'twilio/lib/rest/api/v2010/account/recording/addOnResult';
 
 const router = express.Router();
 

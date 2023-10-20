@@ -129,11 +129,8 @@
 				},
 				{
 					"name": "Restaurant - Login",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -480,7 +477,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOTM1ZDFlODYwNTkwY2E3ODRkNTMiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJuYW1lIjoiVGFuZG9vcmkgcG9pbnQiLCJpYXQiOjE2OTc1NzE3MDMsImV4cCI6MTcwNTM0NzcwM30.saD9iU30JbbfqiTuuPpLlOd8CFEpZrUVBqjk0QGx7l4",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOTM1ZDFlODYwNTkwY2E3ODRkNTMiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJuYW1lIjoiVGFuZG9vcmkgcG9pbnQiLCJpYXQiOjE2OTc2OTczNDksImV4cCI6MTcwNTQ3MzM0OX0.J8v2KOTkQvw8gQq9CeFqFefONyYz3dFONQzXJ0JUJA0",
 						"type": "string"
 					}
 				]
@@ -628,7 +625,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone\": \"9729470221\",\n\t\"otp\": \"403901\"\n}",
+							"raw": "{\n    \"phone\": \"9729470221\",\n\t\"otp\": \"837842\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -684,7 +681,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFmODY3NjRlZWI4ODY4YTRlMTVkNjciLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk2NzM4OTU4LCJleHAiOjE3MDQ1MTQ5NTh9.zkw_xgad3xufLYAhk6pUgraqQW9W9Atu_PGeJyI5HUY",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFmODY3NjRlZWI4ODY4YTRlMTVkNjciLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk3ODM2NDEzLCJleHAiOjE3MDU2MTI0MTN9.8WP20EmMehpXlPOiFosQiBt9ClN7J_6kOsB6w9tIL5I",
 						"type": "string"
 					}
 				]
@@ -777,36 +774,6 @@
 								"food",
 								"restaurant",
 								"5ec01a8cc37246066220a635"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Foods - Details by ID",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{OFA_BASE}}/food/5ec01c2c6b0ad806dd79c3e1",
-							"host": [
-								"{{OFA_BASE}}"
-							],
-							"path": [
-								"food",
-								"5ec01c2c6b0ad806dd79c3e1"
 							]
 						}
 					},
@@ -933,6 +900,80 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Food - Get All Foods",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/foods/651a935d1e860590ca784d53",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"foods",
+								"651a935d1e860590ca784d53"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - Get food details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/foods/651a935d1e860590ca784d53/6530cfc0456c521a0a114ea5",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"foods",
+								"651a935d1e860590ca784d53",
+								"6530cfc0456c521a0a114ea5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - All categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/categories/651a935d1e860590ca784d53",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"categories",
+								"651a935d1e860590ca784d53"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Foods - Get Foods by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/categories/651a935d1e860590ca784d53/cocktail",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"categories",
+								"651a935d1e860590ca784d53",
+								"cocktail"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -987,12 +1028,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{OFA_BASE}}/user/order/6065a2f62aad9fb177392993",
+							"raw": "{{OFA_BASE}}/customer/order/6065a2f62aad9fb177392993",
 							"host": [
 								"{{OFA_BASE}}"
 							],
 							"path": [
-								"user",
+								"customer",
 								"order",
 								"6065a2f62aad9fb177392993"
 							]
@@ -1018,12 +1059,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{OFA_BASE}}/user/order/",
+							"raw": "{{OFA_BASE}}/customer/order/",
 							"host": [
 								"{{OFA_BASE}}"
 							],
 							"path": [
-								"user",
+								"customer",
 								"order",
 								""
 							]
@@ -1112,12 +1153,9 @@
 							}
 						},
 						"url": {
-							"raw": "https://online-foods.herokuapp.com/user/add-order",
-							"protocol": "https",
+							"raw": "{{OFA_BASE}}/user/add-order",
 							"host": [
-								"online-foods",
-								"herokuapp",
-								"com"
+								"{{OFA_BASE}}"
 							],
 							"path": [
 								"user",
@@ -1151,7 +1189,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOGNlODFlODYwNTkwY2E3ODRkNDciLCJlbWFpbCI6InB1c2hwZW5kZXJvaGxhbkBnbWFpbC5jb20iLCJ2ZXJpZmllZCI6ZmFsc2UsImlhdCI6MTY5NjIzODgyNiwiZXhwIjoxNzA0MDE0ODI2fQ.Zm5myZ6f6irQZ50IWEGIkX31jyN6fCFBjnSOyCE5SiQ",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFmODY3NjRlZWI4ODY4YTRlMTVkNjciLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk3ODM2NDEzLCJleHAiOjE3MDU2MTI0MTN9.8WP20EmMehpXlPOiFosQiBt9ClN7J_6kOsB6w9tIL5I",
 						"type": "string"
 					}
 				]
