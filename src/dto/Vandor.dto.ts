@@ -44,14 +44,6 @@ export class VendorLoginInput {
     password: string;
 }
 
-export interface VendorPayload {
-
-    _id: string;
-    phone: string;
-    name: string;
-
-}
-
 export interface CreateOfferInputs {
     offerType: string;
     vendors: [any];

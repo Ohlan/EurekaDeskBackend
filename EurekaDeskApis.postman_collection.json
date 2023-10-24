@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Tandoori point\",\n    \"address\": \"Rohtak, Haryana\",\n    \"pincode\": \"124501\",\n    \"foodType\": [\"veg\",\"non-veg\"],\n    \"email\": \"tandooripoint@org.com\",\n    \"password\":\"abcd1234\",\n    \"ownerName\": \"ohlan\",\n    \"phone\": \"9729470221\"\n}",
+							"raw": "{\n    \"name\": \"Food point\",\n    \"address\": \"Rohtak, Haryana\",\n    \"pincode\": \"124501\",\n    \"foodType\": [\"veg\",\"non-veg\"],\n    \"email\": \"foodpoint@org.com\",\n    \"password\":\"abcd1234\",\n    \"ownerName\": \"pushpendra\",\n    \"phone\": \"9729470221\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -134,7 +134,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"tandoorpoint@org.com\",\n    \"password\": \"abcd1234\"\n}",
+							"raw": "{\n    \"email\": \"foodpoint@org.com\",\n    \"password\": \"abcd1234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -478,7 +478,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"roleName\": \"waiter\",\n    \"permissions\": [\"readPOS\"]\n}",
+							"raw": "{\n    \"roleName\": \"manager\",\n    \"permissions\": [\"readPOS\", \"manageMenu\", \"manageAll\", \"readReports\", \"manageCustomers\", \"manageFeedback\"]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -505,7 +505,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Chhotu\",\n    \"email\": \"chhotunath123@gmail.com\",\n    \"phone\": \"9829470211\",\n    \"role\": \"waiter\"\n}",
+							"raw": "{\n    \"name\": \"ramesh\",\n    \"email\": \"ahgcdefgh@gmail.com\",\n    \"phone\": \"97894702i1\",\n    \"role\": \"waiter\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -561,7 +561,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone\": \"9729470221\",\n    \"otp\": 95164\n}",
+							"raw": "{\n    \"phone\": \"9729470221\",\n    \"otp\": 245991\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -600,6 +600,33 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Restaurant - Edit Role",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleName\": \"manager\",\n    \"permissions\": [\"readPOS\", \"manageMenu\", \"manageAll\", \"manageCustomers\", \"manageFeedback\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/role",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"role"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -607,7 +634,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTM2YzlhNzVmZDEzZjhiYmEwZmRmZTYiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwicm9sZSI6IjY1MzZjMGVkNTk4YzQyODVlNjQxNjZlMyIsImlhdCI6MTY5ODA5MTI2NiwiZXhwIjoxNzA1ODY3MjY2fQ.k9fIyy1YvfN81FKm0X3dvSGUMqq2GItECsr3qVgq480",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTM3ZDNhMTk0MzdhNTlmODQwOWNkY2YiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjk4MTU4NjM0LCJleHAiOjE3MDU5MzQ2MzR9.DesLvkzhRDlnutrHSsT8tS5OuidcCqNJ-WteqhE-eX4",
 						"type": "string"
 					}
 				]
