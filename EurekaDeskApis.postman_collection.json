@@ -134,7 +134,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"tandooripoint@org.com\",\n    \"password\": \"abcd1234\"\n}",
+							"raw": "{\n    \"email\": \"tandoorpoint@org.com\",\n    \"password\": \"abcd1234\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -182,7 +182,7 @@
 					"response": []
 				},
 				{
-					"name": "Restaurent - Add Food",
+					"name": "Restaurant - Add Food",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -209,7 +209,7 @@
 					"response": []
 				},
 				{
-					"name": "Restaurent - Get All Food Items",
+					"name": "Restaurant - Get All Food Items",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -470,6 +470,136 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Restaurant - Add role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roleName\": \"waiter\",\n    \"permissions\": [\"readPOS\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/role",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Create Employee",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Chhotu\",\n    \"email\": \"chhotunath123@gmail.com\",\n    \"phone\": \"9829470211\",\n    \"role\": \"waiter\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/employee/create",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"employee",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Employee login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vendorId\": \"\",\n    \"phone\": \"9729470221\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/employee/login",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"employee",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Employee verify",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phone\": \"9729470221\",\n    \"otp\": 95164\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/employee/verify",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"employee",
+								"verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get All Employees",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/employee/",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"employee",
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -477,7 +607,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOTM1ZDFlODYwNTkwY2E3ODRkNTMiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJuYW1lIjoiVGFuZG9vcmkgcG9pbnQiLCJpYXQiOjE2OTc2OTczNDksImV4cCI6MTcwNTQ3MzM0OX0.J8v2KOTkQvw8gQq9CeFqFefONyYz3dFONQzXJ0JUJA0",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTM2YzlhNzVmZDEzZjhiYmEwZmRmZTYiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwicm9sZSI6IjY1MzZjMGVkNTk4YzQyODVlNjQxNjZlMyIsImlhdCI6MTY5ODA5MTI2NiwiZXhwIjoxNzA1ODY3MjY2fQ.k9fIyy1YvfN81FKm0X3dvSGUMqq2GItECsr3qVgq480",
 						"type": "string"
 					}
 				]
