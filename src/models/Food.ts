@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
 
 export interface FoodDoc extends Document {
@@ -37,11 +37,6 @@ const FoodSchema = new Schema({
     },
     timestamps: true
 });
-
-
-const Food = mongoose.model<FoodDoc>('food', FoodSchema);
-
-export { Food }
 
 export interface CategoryDoc extends Document {
 
@@ -83,4 +78,6 @@ const CategorySchema = new Schema({
 
 const Category = mongoose.model<CategoryDoc>('category', CategorySchema);
 
-export { Category }
+const Food = mongoose.model<FoodDoc>('food', FoodSchema);
+
+export { Category, Food }

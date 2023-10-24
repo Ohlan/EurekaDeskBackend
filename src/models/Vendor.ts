@@ -17,10 +17,10 @@ interface VendorDoc extends Document {
     rating: number;
     foods: any,
     categories: any,
+    employee: any,
     lat: number;
     lng: number;
 }
-
 
 const VendorSchema = new Schema({
     name:{ type: String, required: true},
@@ -42,6 +42,10 @@ const VendorSchema = new Schema({
     categories: [{
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'category'
+    }],
+    employee: [{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'employee'
     }],
     lat: { type: Number},
     lng: {type: Number}

@@ -100,7 +100,7 @@ export const CustomerVerify = async (req: Request, res: Response, next: NextFunc
     }
     // const customer = req.user;
 
-    const {phone, otp} = customerInputs;
+    const { phone, otp } = customerInputs;
 
     // if(customer){
         const profile = await Customer.findOne({phone: phone});
@@ -210,6 +210,21 @@ export const EditCustomerProfile = async (req: Request, res: Response, next: Nex
     }
     return res.status(400).json({ msg: 'Error while Updating Profile'});
 
+}
+
+export const GetCustomers = async ( req: Request, res: Response, next: NextFunction ) => {
+    const user = req.user;
+ 
+    if(user){
+
+       const customers = await Customer.find({ vendorId: user._id});
+
+       if(customers !== null){
+            return res.json(customers);
+       }
+
+    }
+    return res.json({'message': 'Customers not found!'})
 }
 
 /* ------------------- Delivery Notification --------------------- */

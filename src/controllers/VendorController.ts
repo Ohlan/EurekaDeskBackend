@@ -4,29 +4,33 @@ import { CreateCategoryInput, CreateFoodInput, CreateOfferInputs, EditVendorInpu
 import { Category, Food } from '../models';
 import { Offer } from '../models/Offer';
 import { Order } from '../models/Order';
-import { GenerateSignature, ValidatePassword } from '../utility';
+import { GenerateOtp, GenerateSignature, ValidatePassword, onRequestOTP } from '../utility';
 import { FindVendor } from './AdminController';
 import { CreateTableInputs, UpdateTableInputs } from '../dto/Table.dto';
 import { Table } from '../models/Table';
-
+import { CreateEmployeeInput, CreateRoleInput, EmployeeLoginInput, EmployeeVerifyInput } from '../dto/Employee.dto';
+import { Employee, Role } from '../models/Employee';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
 
 export const VendorLogin = async (req: Request,res: Response, next: NextFunction) => {
 
     const { email, password } = <VendorLoginInput>req.body;
 
-    const existingUser = await FindVendor('', email);
+    const currentVendor = await FindVendor('', email);
 
-    if(existingUser !== null){
+    if(currentVendor !== null){
 
-        const validation = await ValidatePassword(password, existingUser.password, existingUser.salt);
+        const validation = await ValidatePassword(password, currentVendor.password, currentVendor.salt);
         if(validation){
 
             const signature = await GenerateSignature({
-                _id: existingUser._id,
-                phone: existingUser.phone,
-                name: existingUser.name
+                _id: currentVendor._id,
+                phone: currentVendor.phone,
+                name: currentVendor.name,
+                role: currentVendor.employee[0].role
             })
-            return res.json({signature} );
+            return res.json({signature: signature, role: currentVendor.employee.role.roleName} );
         }
     }
 
@@ -34,9 +38,80 @@ export const VendorLogin = async (req: Request,res: Response, next: NextFunction
 
 }
 
+export const EmployeeLogin = async (req: Request,res: Response, next: NextFunction) => {
 
+    const { vendorId, phone } = <EmployeeLoginInput>req.body;
 
-export const GetVendorProfile = async (req: Request,res: Response, next: NextFunction) => {
+    const currentEmployee = await Employee.findOne({phone: phone});
+
+    if(currentEmployee !== null){
+        const { otp, expiry } = GenerateOtp();
+        currentEmployee.otp = otp
+        currentEmployee.otp_expiry = expiry
+        await currentEmployee.save()
+        await onRequestOTP(otp, phone);
+        return res.status(201).json({phone: phone})
+    }
+
+    return res.json({'message': 'Employee doesn\'t exist with this phone number'})
+
+}
+
+export const EmployeeVerify = async (req: Request, res: Response, next: NextFunction) => {
+
+    const customerInputs = plainToClass(EmployeeVerifyInput, req.body);
+
+    const validationError = await validate(customerInputs, {validationError: { target: true}})
+
+    if(validationError.length > 0){
+        return res.status(400).json(validationError);
+    }
+    // const customer = req.user;
+
+    const {phone, otp} = customerInputs;
+
+    // if(customer){
+        const profile = await Employee.findOne({phone: phone});
+        if(profile){
+            if(profile.otp === parseInt(otp) && profile.otp_expiry >= new Date()){
+
+                const signature = await GenerateSignature({
+                    _id: profile._id,
+                    phone: profile.phone,
+                    verified: true,
+                    role: profile.role
+                })
+
+                return res.status(200).json({
+                    signature,
+                    phone: profile.phone,
+                    role: profile.role.roleName
+                })
+            }
+            
+        }
+
+    // }
+
+    return res.status(400).json({ msg: 'Unable to verify Customer'});
+}
+
+export const GetAllEmployee = async ( req: Request, res: Response, next: NextFunction ) => {
+    const user = req.user;
+ 
+    if(user){
+       const vendorId = (await Employee.findById(user._id)).vendorId;
+       const employees = await Employee.find({ vendorId: vendorId}).populate('role');
+
+       if(employees !== null){
+            return res.json(employees);
+       }
+
+    }
+    return res.json({'message': 'Employee not found!'})
+}
+
+export const GetVendorProfile = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = req.user;
      
@@ -484,3 +559,84 @@ export const GetTables = async (req: Request, res: Response, next: NextFunction)
     return res.json({'message': 'Tables not found!'})
 }
 
+export const GetPermissions = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if(user) {
+        return res.json({permissions: Permissions});
+    }
+
+    return res.json({'message': 'Permissions not found'})
+}
+
+export const AddRole = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if(user) {
+
+        const {roleName, permissions} = <CreateRoleInput>req.body
+
+        if(await Role.findOne({roleName: roleName}) != null) {
+            return res.json('Role already exists');
+        }
+
+        const newRole = await Role.create({
+            vendorId: user._id,
+            roleName: roleName,
+            permissions: permissions,
+        });
+
+        return res.json(newRole);
+    }
+
+    return res.json({'message': 'unable to add role'})
+}
+
+// export const EditRole = async (req: Request, res: Response, next: NextFunction) => {
+//     const user = req.user;
+
+//     if(user) {
+//         return res.json({permissions: Permissions});
+//     }
+
+//     return res.json({'message': 'Permissions not found'})
+// }
+
+export const AddEmployee = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if(user) {
+        const vendor = await FindVendor((await Employee.findById(user._id)).vendorId);
+
+        const {name, email, phone, role} = <CreateEmployeeInput>req.body;
+
+        const roleRef = await Role.findOne({roleName: role})
+        
+        const employee = await Employee.create({
+            vendorId: vendor.id,
+            name: name,
+            email: email,
+            phone: phone,
+            role: roleRef
+        })
+        vendor.employee.push(employee)
+        await vendor.save();
+        return res.json(vendor.employee)
+    }
+
+    return res.json({'message': 'unable to add employee'})
+}
+
+// export const EditEmployee = async (req: Request, res: Response, next: NextFunction) => {
+//     const user = req.user;
+
+//     if(user) {
+//         return res.json({permissions: Permissions});
+//     }
+
+//     return res.json({'message': 'Permissions not found'})
+// }
+
+// const AuthenticateAcess = async (req: Request, permission: string) => {
+//     if(req.user.role.permissions.findOne({permission}))
+// }

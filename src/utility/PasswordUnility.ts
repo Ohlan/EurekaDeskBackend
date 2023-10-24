@@ -45,3 +45,5 @@ export const ValidateSignature  = async(req: Request) => {
     }
     return false
 };
+
+export const Permissions = ["readPOS", "manageMenu", "manageAll", "readReports", "manageCustomers", "manageFeedback"];

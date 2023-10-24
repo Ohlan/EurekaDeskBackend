@@ -2,7 +2,9 @@ import { Request, Response, NextFunction } from 'express'
 import { CreateVandorInput } from '../dto';
 import { DeliveryUser, Vendor } from '../models';
 import { Transaction } from '../models/Transaction';
-import { GeneratePassword, GenerateSalt } from '../utility';
+import { GeneratePassword, GenerateSalt, Permissions } from '../utility';
+import { Employee, Role } from '../models/Employee';
+import { create } from 'ts-node';
  
 export const FindVendor = async (id: String | undefined, email?: string) => {
 
@@ -31,7 +33,6 @@ export const CreateVandor = async (req: Request, res: Response, next: NextFuncti
     const userPassword = await GeneratePassword(password, salt);
 
     // encrypt the password using the salt
-    
 
     const createdVandor =  await Vendor.create({
         name: name,
@@ -50,6 +51,25 @@ export const CreateVandor = async (req: Request, res: Response, next: NextFuncti
         lng: 0
     })
 
+    // Create admin role for this id
+
+    const role = await Role.create({
+        vendorId: createdVandor._id,
+        roleName: "admin",
+        permissions: Permissions
+    })
+
+    const employee = await Employee.create({
+        vendorId: createdVandor.id,
+        name: createdVandor.ownerName,
+        phone: createdVandor.phone,
+        email: createdVandor.email,
+        role: role
+    })
+
+    createdVandor.employee.push(employee);
+    createdVandor.save()
+    
     return res.json(createdVandor)
 
 }

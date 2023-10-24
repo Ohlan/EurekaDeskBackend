@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { AddCategory, AddFood, AddOffer, AddTable, EditOffer, GetCategories, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin } from '../controllers';
+import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin } from '../controllers';
 import { Authenticate } from '../middleware';
 import multer from 'multer';
 
@@ -18,8 +18,11 @@ const images = multer({ storage: imageStorage}).array('images', 10);
 
 
 router.post('/login', VendorLogin);
+router.post('/employee/login', EmployeeLogin)
+router.patch('/employee/verify', EmployeeVerify)
 
 router.use(Authenticate)
+
 router.get('/profile', GetVendorProfile);
 router.patch('/profile', UpdateVendorProfile);
 router.patch('/coverimage', images, UpdateVendorCoverImage);
@@ -37,7 +40,12 @@ router.get('/table', GetTables)
 router.get('/orders', GetOrders);
 router.put('/order/:id/process', ProcessOrder);
 router.get('/order/:id', GetOrderDetails)
- 
+
+router.post('/employee/create', AddEmployee)
+router.get('/employee', GetAllEmployee)
+
+router.post('/role', AddRole)
+router.get('/permissions', GetPermissions)
 
 //Offers
 router.get('/offers', GetOffers);
