@@ -28,11 +28,6 @@ export class EmployeeVerifyInput {
     otp: string;
 }
 
-export interface UpdateEmployeeInput {
-
-    role: any;
-}
-
 export class CreateRoleInput {
 
     @Length(3, 10)

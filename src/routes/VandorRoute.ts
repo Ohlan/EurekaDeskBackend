@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole } from '../controllers';
+import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails } from '../controllers';
 import { Authenticate } from '../middleware';
 import multer from 'multer';
 
@@ -43,6 +43,7 @@ router.get('/order/:id', GetOrderDetails)
 
 router.post('/employee/create', AddEmployee)
 router.get('/employee', GetAllEmployee)
+router.patch('/employee', UpdateEmployeeDetails)
 
 router.post('/role', AddRole)
 router.patch('/role', EditRole)

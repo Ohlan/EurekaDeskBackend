@@ -27,7 +27,7 @@ export const VendorLogin = async (req: Request,res: Response, next: NextFunction
             const roleRef = (await Employee.findById(currentVendor.employee[0])).role
             const role = await Role.findById(roleRef)
             const signature = await GenerateSignature({
-                _id: currentVendor._id,
+                _id: currentVendor.employee[0]._id,
                 phone: currentVendor.phone,
                 verified: false,
                 role: role.roleName
@@ -622,9 +622,18 @@ export const AddEmployee = async (req: Request, res: Response, next: NextFunctio
     if(user) {
         const vendor = await FindVendor((await Employee.findById(user._id)).vendorId);
 
-        const {name, email, phone, role} = <CreateEmployeeInput>req.body;
+        const {name, email, phone, role} = plainToClass(CreateEmployeeInput, req.body);
+        const validationError = await validate(CreateEmployeeInput, {validationError: { target: true}})
+
+        if(validationError.length > 0){
+            return res.status(400).json(validationError);
+        }
 
         const roleRef = await Role.findOne({roleName: role})
+
+        if(await Employee.findOne({phone: phone, vendorId: vendor.id}) != null) {
+            return res.json('Employee with this phone no. already exists');
+        }
 
         if(vendor != null && roleRef != null)
         {
@@ -644,15 +653,37 @@ export const AddEmployee = async (req: Request, res: Response, next: NextFunctio
     return res.json({'message': 'unable to add employee'})
 }
 
-// export const EditEmployee = async (req: Request, res: Response, next: NextFunction) => {
-//     const user = req.user;
+export const UpdateEmployeeDetails = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
 
-//     if(user) {
-//         return res.json({permissions: Permissions});
-//     }
+    if(user) {
+        
+        const vendor = await FindVendor((await Employee.findById(user._id)).vendorId);
 
-//     return res.json({'message': 'Permissions not found'})
-// }
+        const {name, email, phone, role} = plainToClass(CreateEmployeeInput, req.body);
+
+        const validationError = await validate(CreateEmployeeInput, {validationError: { target: true}})
+
+        if(validationError.length > 0){
+            return res.status(400).json(validationError);
+        }
+
+        const roleRef = await Role.findOne({roleName: role})
+        const employee = await Employee.findOne({vendorId: vendor.id, phone: phone})
+        if(employee != null)
+        {
+            employee.name = name,
+            employee.email = email,
+            employee.phone = phone,
+            employee.role = roleRef
+            await employee.save()
+            return res.json(employee)
+        }
+        return res.json({'message':'Employee with this phone no. doesn\'t exists'});
+    }
+
+    return res.json({'message': 'unable to update employee details'})
+}
 
 // const AuthenticateAcess = async (req: Request, permission: string) => {
 //     if(req.user.role.permissions.findOne({permission}))

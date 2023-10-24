@@ -627,6 +627,33 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Restaurant - Update Employee details",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"ramu\",\n    \"email\": \"ahgcdefgh@gmail.com\",\n    \"phone\": \"97894702i1\",\n    \"role\": \"waiter\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/employee",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"employee"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -634,7 +661,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTM3ZDNhMTk0MzdhNTlmODQwOWNkY2YiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjk4MTU4NjM0LCJleHAiOjE3MDU5MzQ2MzR9.DesLvkzhRDlnutrHSsT8tS5OuidcCqNJ-WteqhE-eX4",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTM3ZDNhMTk0MzdhNTlmODQwOWNkY2YiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6ZmFsc2UsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5ODE3OTgzNywiZXhwIjoxNzA1OTU1ODM3fQ.0cyAntpuY-B8Ncrs8LXneUSrZ4T-z8VZBlRs1NEsAXI",
 						"type": "string"
 					}
 				]
