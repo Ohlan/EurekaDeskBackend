@@ -223,15 +223,15 @@ export const AddCategory = async (req: Request, res: Response, next: NextFunctio
 
        if(vendor !== null){
 
-            // const files = req.files as [Express.Multer.File];
+            const files = req.files as [Express.Multer.File];
 
-            // const images = files.map((file: Express.Multer.File) => file.filename);
+            const images = files.map((file: Express.Multer.File) => file.filename);
             
             const category = await Category.create({
                 vendorId: vendor._id,
                 name: name,
                 description: description,
-                // images: images
+                images: images
             })
             vendor.categories.push(category);
             const result = await vendor.save();
@@ -270,9 +270,9 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
 
        if(vendor !== null){
 
-            // const files = req.files as [Express.Multer.File];
+            const files = req.files as [Express.Multer.File];
 
-            // const images = files.map((file: Express.Multer.File) => file.filename);
+            const images = files.map((file: Express.Multer.File) => file.filename);
             
             const food = await Food.create({
                 vendorId: vendor._id,
@@ -282,7 +282,7 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
                 price: price,
                 rating: 0,
                 readyTime: readyTime,
-                // images: images,
+                images: images,
                 foodType: foodType
             })
             const categoryRef = await Category.findOne({ vendorId: user._id, name: category})
