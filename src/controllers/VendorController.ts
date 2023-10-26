@@ -285,7 +285,7 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
                 images: images,
                 foodType: foodType
             })
-            const categoryRef = await Category.findOne({ vendorId: user._id, name: category})
+            const categoryRef = await Category.findOne({ vendorId: vendor.id, name: category})
             categoryRef.allFoods.push(food)
             await categoryRef.save();
             vendor.foods.push(food);

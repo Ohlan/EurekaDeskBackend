@@ -11,7 +11,7 @@ export const FindVendor = async (id: String | undefined, email?: string) => {
     if(email){
         return await Vendor.findOne({ email: email})
     }else{
-        return await Vendor.findById(id);
+        return await Vendor.findById((await Employee.findById(id)).vendorId);
     }
 
 }
