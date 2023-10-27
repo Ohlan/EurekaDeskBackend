@@ -213,34 +213,38 @@ export const UpdateVendorService = async (req: Request,res: Response, next: Next
 }
 
 export const AddCategory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+            const user = req.user;
 
-    const user = req.user;
+        const { name, description } = <CreateCategoryInput>req.body;
+        
+        if(user){
 
-    const { name, description } = <CreateCategoryInput>req.body;
-     
-    if(user){
+        const vendor = await FindVendor(user._id);
 
-       const vendor = await FindVendor(user._id);
+        if(vendor !== null){
 
-       if(vendor !== null){
+                const files = req.files as [Express.Multer.File];
 
-            const files = req.files as [Express.Multer.File];
+                const images = files.map((file: Express.Multer.File) => file.filename);
+                
+                const category = await Category.create({
+                    vendorId: vendor.id,
+                    name: name,
+                    description: description,
+                    images: images
+                })
+                vendor.categories.push(category);
+                const result = await vendor.save();
+                return res.json(result);
+        }
 
-            const images = files.map((file: Express.Multer.File) => file.filename);
-            
-            const category = await Category.create({
-                vendorId: vendor._id,
-                name: name,
-                description: description,
-                images: images
-            })
-            vendor.categories.push(category);
-            const result = await vendor.save();
-            return res.json(result);
-       }
-
+        }
+        return res.json({'message': 'Unable to add category'})
     }
-    return res.json({'message': 'Unable to add category'})
+    catch(error) {
+        return res.status(500).json(error.message);
+    }
 }
 
 export const GetCategories = async (req: Request, res: Response, next: NextFunction) => {
@@ -262,41 +266,46 @@ export const GetCategories = async (req: Request, res: Response, next: NextFunct
 
 export const AddFood = async (req: Request, res: Response, next: NextFunction) => {
 
-    const user = req.user;
+    try {
+        const user = req.user;
 
-    const { name, description, category, foodType, readyTime, price } = <CreateFoodInput>req.body;
-     
-    if(user){
+        const { name, description, category, foodType, readyTime, price } = <CreateFoodInput>req.body;
+        
+        if(user){
 
-       const vendor = await FindVendor(user._id);
+        const vendor = await FindVendor(user._id);
 
-       if(vendor !== null){
+        if(vendor !== null){
 
-            const files = req.files as [Express.Multer.File];
+                const files = req.files as [Express.Multer.File];
 
-            const images = files.map((file: Express.Multer.File) => file.filename);
-            
-            const food = await Food.create({
-                vendorId: vendor._id,
-                name: name,
-                description: description,
-                category: category,
-                price: price,
-                rating: 0,
-                readyTime: readyTime,
-                images: images,
-                foodType: foodType
-            })
-            const categoryRef = await Category.findOne({ vendorId: vendor.id, name: category})
-            categoryRef.allFoods.push(food)
-            await categoryRef.save();
-            vendor.foods.push(food);
-            const result = await vendor.save();
-            return res.json(result);
-       }
+                const images = files.map((file: Express.Multer.File) => file.filename);
+                
+                const food = await Food.create({
+                    vendorId: vendor.id,
+                    name: name,
+                    description: description,
+                    category: category,
+                    price: price,
+                    rating: 0,
+                    readyTime: readyTime,
+                    images: images,
+                    foodType: foodType
+                })
+                const categoryRef = await Category.findOne({ vendorId: vendor.id, name: category})
+                categoryRef.allFoods.push(food)
+                await categoryRef.save();
+                vendor.foods.push(food);
+                const result = await vendor.save();
+                return res.json(result);
+        }
 
+        }
+        return res.json({'message': 'Unable to Update vendor profile '})
     }
-    return res.json({'message': 'Unable to Update vendor profile '})
+    catch(error) {
+        return res.status(500).json(error.message);
+    }
 }
 
 export const GetFoods = async (req: Request, res: Response, next: NextFunction) => {
