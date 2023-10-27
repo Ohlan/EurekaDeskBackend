@@ -187,13 +187,44 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"blue lagoon\",\n  \"description\": \"Sample food description.\",\n  \"category\": \"cocktail\",\n  \"foodType\": \"Sample food type\",\n  \"readyTime\": \"15\",\n  \"price\": 12.99\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "blue lagoon",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Sample food description.",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "cocktails",
+									"type": "text"
+								},
+								{
+									"key": "foodType",
+									"value": "veg",
+									"type": "text"
+								},
+								{
+									"key": "readyTime",
+									"value": "15",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "24",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/Users/pushpendrakumar/Documents/images/item1.jpeg"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{OFA_BASE}}/vendor/food",
@@ -432,13 +463,24 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"cocktail\",\n    \"description\": \"tasty and healthy\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "cocktails",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "tasty and healthy",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/Users/pushpendrakumar/Documents/images/pexels-photo-8969237.jpeg"
 								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{OFA_BASE}}/vendor/category",
@@ -561,7 +603,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"phone\": \"9729470221\",\n    \"otp\": 245991\n}",
+							"raw": "{\n    \"phone\": \"9729470221\",\n    \"otp\": 65801\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -654,6 +696,86 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Restaurant - Edit Tax",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Gst\",\n    \"isApplicable\": true,\n    \"rate\": 20\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/tax/:taxId",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"tax",
+								":taxId"
+							],
+							"variable": [
+								{
+									"key": "taxId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get taxes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/taxes",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"taxes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant -  Add Tax",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Gst\",\n    \"isApplicable\": true,\n    \"rate\": 20\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/tax/",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"tax",
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -661,7 +783,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTM3ZDNhMTk0MzdhNTlmODQwOWNkY2YiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6ZmFsc2UsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5ODE3OTgzNywiZXhwIjoxNzA1OTU1ODM3fQ.0cyAntpuY-B8Ncrs8LXneUSrZ4T-z8VZBlRs1NEsAXI",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTM3ZDNhMTk0MzdhNTlmODQwOWNkY2YiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjk4MzkwMzEyLCJleHAiOjE3MDYxNjYzMTJ9.yEF8u0AHyaFClchTaCJNL4YW5w2mliy8xZTPlAaGXdM",
 						"type": "string"
 					}
 				]

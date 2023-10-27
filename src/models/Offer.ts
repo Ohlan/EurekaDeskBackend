@@ -50,7 +50,31 @@ const OfferSchema = new Schema({
     timestamps: true
 });
 
+export interface TaxDoc extends Document {
+    vendorId: string;
+    name: string;
+    isApplicable: boolean;
+    rate: string;
+}
+
+const TaxScheme = new Schema({
+    vendorId: {type: String, require: true},
+    name: {type: String, require: true},
+    isApplicable: {type: Boolean, require: true},
+    rate: {type: String, require: true}
+},{
+    toJSON: {
+        transform(doc, ret){
+            delete ret.__v;
+            delete ret.createdAt;
+            delete ret.updatedAt;
+
+        }
+    },
+    timestamps: true
+});
 
 const Offer = mongoose.model<OfferDoc>('offer', OfferSchema);
+const Tax = mongoose.model<TaxDoc>('tax', TaxScheme);
 
-export { Offer }
+export { Offer, Tax }

@@ -1,8 +1,8 @@
 
 import {  Request, Response ,NextFunction } from 'express';
-import { CreateCategoryInput, CreateFoodInput, CreateOfferInputs, EditVendorInput, VendorLoginInput } from '../dto'
+import { CreateCategoryInput, CreateFoodInput, CreateOfferInputs, CreateTaxInputs, EditVendorInput, VendorLoginInput } from '../dto'
 import { Category, Food } from '../models';
-import { Offer } from '../models/Offer';
+import { Offer, Tax } from '../models/Offer';
 import { Order } from '../models/Order';
 import { GenerateOtp, GenerateSignature, ValidatePassword, onRequestOTP } from '../utility';
 import { FindVendor } from './AdminController';
@@ -26,6 +26,7 @@ export const VendorLogin = async (req: Request,res: Response, next: NextFunction
 
             const roleRef = (await Employee.findById(currentVendor.employee[0])).role
             const role = await Role.findById(roleRef)
+
             const signature = await GenerateSignature({
                 _id: currentVendor.employee[0]._id,
                 phone: currentVendor.phone,
@@ -143,7 +144,7 @@ export const UpdateVendorProfile = async (req: Request,res: Response, next: Next
        if(existingVendor !== null){
 
             existingVendor.name = name;
-            existingVendor.address;
+            existingVendor.address = address;
             existingVendor.phone = phone;
             existingVendor.foodType = foodType;
             const saveResult = await existingVendor.save();
@@ -248,7 +249,8 @@ export const GetCategories = async (req: Request, res: Response, next: NextFunct
  
     if(user){
 
-       const categories = await Category.find({ vendorId: user._id});
+        const vendor = await FindVendor(user._id)
+       const categories = await Category.find({ vendorId: vendor.id});
 
        if(categories !== null){
             return res.json(categories);
@@ -301,8 +303,8 @@ export const GetFoods = async (req: Request, res: Response, next: NextFunction) 
     const user = req.user;
  
     if(user){
-
-       const foods = await Food.find({ vendorId: user._id});
+        const vendor = await FindVendor(user._id)
+       const foods = await Food.find({ vendorId: vendor.id});
 
        if(foods !== null){
             return res.json(foods);
@@ -449,8 +451,6 @@ export const AddOffer = async (req: Request, res: Response, next: NextFunction) 
 
     return res.json({ message: 'Unable to add Offer!'});
 
-    
-
 }
 
 export const EditOffer = async (req: Request, res: Response, next: NextFunction) => {
@@ -527,8 +527,9 @@ export const UpdateTable = async (req: Request, res: Response, next: NextFunctio
     const { tableNumber, isFree, currentOrder } = <UpdateTableInputs>req.body;
      
     if(user){
+        const vendor = await FindVendor(user._id)
 
-        const requiredTable = await Table.findOne({vendorId: user._id, tableNumber: tableNumber});
+        const requiredTable = await Table.findOne({vendorId: vendor.id, tableNumber: tableNumber});
 
         if(requiredTable !== null){
  
@@ -552,8 +553,10 @@ export const GetTables = async (req: Request, res: Response, next: NextFunction)
     const user = req.user;
  
     if(user){
+    
+        const vendor = await FindVendor(user._id)
 
-       const tables = await Table.find({ vendorId: user._id});
+       const tables = await Table.find({ vendorId: vendor.id});
 
        if(tables !== null){
             return res.json(tables);
@@ -600,8 +603,9 @@ export const EditRole = async (req: Request, res: Response, next: NextFunction) 
     const user = req.user;
 
     if(user) {
+        const vendor = await FindVendor(user._id)
         const {roleName, permissions} = <CreateRoleInput>req.body
-        const role = await Role.findOne({roleName: roleName})
+        const role = await Role.findOne({vendorId: vendor.id, roleName: roleName})
         if(role != null) {
             role.roleName = roleName
             role.permissions = permissions
@@ -620,7 +624,7 @@ export const AddEmployee = async (req: Request, res: Response, next: NextFunctio
     const user = req.user;
 
     if(user) {
-        const vendor = await FindVendor((await Employee.findById(user._id)).vendorId);
+        const vendor = await FindVendor(user._id)
 
         const {name, email, phone, role} = plainToClass(CreateEmployeeInput, req.body);
         const validationError = await validate(CreateEmployeeInput, {validationError: { target: true}})
@@ -658,7 +662,7 @@ export const UpdateEmployeeDetails = async (req: Request, res: Response, next: N
 
     if(user) {
         
-        const vendor = await FindVendor((await Employee.findById(user._id)).vendorId);
+        const vendor = await FindVendor(user._id);
 
         const {name, email, phone, role} = plainToClass(CreateEmployeeInput, req.body);
 
@@ -683,6 +687,69 @@ export const UpdateEmployeeDetails = async (req: Request, res: Response, next: N
     }
 
     return res.json({'message': 'unable to update employee details'})
+}
+
+export const AddTax = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if(user) {
+
+        const {name, isApplicable, rate} = <CreateTaxInputs>req.body
+
+        if(await Tax.findOne({name: name}) != null) {
+            return res.json('Tax already exists');
+        }
+        const vendor = await FindVendor(user._id)
+        const newTax = await Tax.create({
+            vendorId: vendor.id,
+            name: name,
+            isApplicable: isApplicable,
+            rate: rate
+        });
+
+        return res.json(newTax);
+    }
+
+    return res.json({'message': 'unable to add tax'})
+}
+
+export const EditTax = async (req: Request, res: Response, next: NextFunction) => {
+
+    const user = req.user;
+    const taxId = req.params.taxId;
+    if(user) {
+        const {name, isApplicable, rate} = <CreateTaxInputs>req.body
+
+        const tax = await Tax.findById(taxId)
+        if(tax != null) {
+            tax.name = name
+            tax.isApplicable = isApplicable
+            tax.rate = rate
+            await tax.save()
+            return res.json(tax);
+        }
+
+        return res.json({'message': 'tax doesn\'t exist'});
+    }
+
+    return res.json({'message': 'unable to update tax'})
+
+}
+
+export const GetTaxes = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if(user){
+
+        const vendor = await FindVendor(user._id)
+        const taxes = await Tax.find({ vendorId: vendor.id});
+ 
+        if(taxes !== null){
+             return res.json(taxes);
+        }
+ 
+     }
+     return res.json({'message': 'Taxes not found!'})
 }
 
 // const AuthenticateAcess = async (req: Request, permission: string) => {

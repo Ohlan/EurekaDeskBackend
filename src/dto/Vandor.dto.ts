@@ -60,3 +60,9 @@ export interface CreateOfferInputs {
     pincode: string;
     isActive: boolean;
 }
+
+export interface CreateTaxInputs {
+    name: string;
+    isApplicable: boolean;
+    rate: string;
+}
