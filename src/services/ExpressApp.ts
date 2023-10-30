@@ -1,6 +1,5 @@
 import express , { Application } from 'express';
 import path from 'path';
-
 import {AdminRoute, DeliveryRoute, VandorRoute} from '../routes'
 import { CustomerRoute } from '../routes/CustomerRoute';
 import { ShoppingRoute } from '../routes/ShoppingRoutes';
@@ -9,6 +8,10 @@ import { FRONTEND, FRONTEND_SECONDARY } from '../config';
  
 
 export default async(app: Application) => {
+
+    process.on('uncaughtException', function (error) {
+        console.log(error.stack);
+     });
 
     app.use(express.json());
     app.use(express.urlencoded({ extended: true}))
