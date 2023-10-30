@@ -2,16 +2,25 @@ import express, { Request, Response, NextFunction } from 'express';
 import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails, EditTax, AddTax, GetTaxes } from '../controllers';
 import { Authenticate } from '../middleware';
 import multer from 'multer';
+import fs from 'fs';
 
 const router = express.Router();
+
+// multer configuration
+
+const directory = 'images';
+
+if (!fs.existsSync(directory)) {
+  fs.mkdirSync(directory);
+}
 
 const imageStorage = multer.diskStorage(
     {
         destination: function(req, file, cb){
-            cb(null, 'images')
+            cb(null, directory)
         },
         filename: function(req, file, cb){
-            cb(null, new Date().toISOString()+'_'+file.originalname);
+            cb(null, new Date().toISOString().replace(/[-:T.]/g, '')+'_'+file.originalname);
         }
     }
 )
