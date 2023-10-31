@@ -4,7 +4,7 @@ import {AdminRoute, DeliveryRoute, VandorRoute} from '../routes'
 import { CustomerRoute } from '../routes/CustomerRoute';
 import { ShoppingRoute } from '../routes/ShoppingRoutes';
 import cors from 'cors';
-import { FRONTEND, FRONTEND_SECONDARY } from '../config';
+import { FRONTEND } from '../config';
  
 
 export default async(app: Application) => {
@@ -19,7 +19,7 @@ export default async(app: Application) => {
     app.use(express.json());
 
     var corsOptions = {
-        origin: [ FRONTEND, FRONTEND_SECONDARY],
+        origin: FRONTEND,
         optionsSuccessStatus: 200
     }
 
