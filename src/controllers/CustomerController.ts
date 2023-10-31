@@ -7,6 +7,9 @@ import { Offer } from '../models/Offer';
 import { Order } from '../models/Order';
 import { Transaction } from '../models/Transaction';
 import { GenerateOtp, GenerateSignature, onRequestOTP } from '../utility';
+import Razorpay from 'razorpay';
+import { RAZORPAY_KEY_ID, RAZORPAY_SECRET } from '../config';
+import crypto from 'crypto';
 
 export const CustomerSignUp = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -301,7 +304,7 @@ export const CreateOrder = async (req: Request, res: Response, next: NextFunctio
 
         const orderId = `${Math.floor(Math.random() * 89999)+ 1000}`;
 
-        const cart = <[CartItem]>req.body;
+        const cart = items;
 
         let cartItems = Array();
 
@@ -381,11 +384,10 @@ export const GetOrderById = async (req: Request, res: Response, next: NextFuncti
 
     const orderId = req.params.id;
     
-    
     if(orderId){
 
  
-        const order = await Customer.findById(orderId).populate("items.food");
+        const order = await Order.findById(orderId).populate("items.food");
         
         if(order){
             return res.status(200).json(order);
@@ -513,7 +515,6 @@ export const VerifyOffer = async (req: Request, res: Response, next: NextFunctio
     return res.status(400).json({ msg: 'Offer is Not Valid'});
 }
 
-
 export const CreatePayment = async (req: Request, res: Response, next: NextFunction) => {
 
     const customer = req.user;
@@ -532,6 +533,16 @@ export const CreatePayment = async (req: Request, res: Response, next: NextFunct
     }
     // perform payment gateway charge api
 
+    var instance = new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_SECRET })
+
+    var options = {
+    amount: payableAmount * 100,  // amount in the smallest currency unit
+    currency: "INR",
+    receipt: "order_rcptid_11"
+    };
+
+    const order = await instance.orders.create(options);
+
     // create record on transaction
     const transaction = await Transaction.create({
         customer: customer._id,
@@ -544,8 +555,42 @@ export const CreatePayment = async (req: Request, res: Response, next: NextFunct
         paymentResponse: 'Payment is cash on Delivery'
     })
 
-
     //return transaction
-    return res.status(200).json(transaction);
+    return res.status(200).json({transaction: transaction, order: order});
+}
 
+export const VerifyPayment = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // getting the details back from our font-end
+        const {
+            orderCreationId,
+            razorpayPaymentId,
+            razorpayOrderId,
+            razorpaySignature,
+        } = req.body;
+
+        // Creating our own digest
+        // The format should be like this:
+        // digest = hmac_sha256(orderCreationId + "|" + razorpayPaymentId, secret);
+        const shasum = crypto.createHmac("sha256", "w2lBtgmeuDUfnJVp43UpcaiT");
+
+        shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
+
+        const digest = shasum.digest("hex");
+
+        // comaparing our digest with the actual signature
+        if (digest !== razorpaySignature)
+            return res.status(400).json({ msg: "Transaction not legit!" });
+
+        // THE PAYMENT IS LEGIT & VERIFIED
+        // YOU CAN SAVE THE DETAILS IN YOUR DATABASE IF YOU WANT
+
+        res.json({
+            msg: "success",
+            orderId: razorpayOrderId,
+            paymentId: razorpayPaymentId,
+        });
+    } catch (error) {
+        res.status(500).send(error);
+    }
 }
