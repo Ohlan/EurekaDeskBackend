@@ -572,7 +572,7 @@ export const VerifyPayment = async (req: Request, res: Response, next: NextFunct
         // Creating our own digest
         // The format should be like this:
         // digest = hmac_sha256(orderCreationId + "|" + razorpayPaymentId, secret);
-        const shasum = crypto.createHmac("sha256", "w2lBtgmeuDUfnJVp43UpcaiT");
+        const shasum = crypto.createHmac("sha256", "luaOzY3YrSFtbonCduLQwjHw");
 
         shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
 
@@ -585,7 +585,7 @@ export const VerifyPayment = async (req: Request, res: Response, next: NextFunct
         // THE PAYMENT IS LEGIT & VERIFIED
         // YOU CAN SAVE THE DETAILS IN YOUR DATABASE IF YOU WANT
 
-        res.json({
+        res.status(200).json({
             msg: "success",
             orderId: razorpayOrderId,
             paymentId: razorpayPaymentId,
