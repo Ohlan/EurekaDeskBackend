@@ -536,10 +536,10 @@ export const CreatePayment = async (req: Request, res: Response, next: NextFunct
     var instance = new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_SECRET })
 
     var options = {
-    amount: payableAmount * 100,  // amount in the smallest currency unit
+    amount: Number(payableAmount * 100),  // amount in the smallest currency unit
     currency: "INR",
     receipt: "order_rcptid_11"
-    };
+    }
 
     const order = await instance.orders.create(options);
 
@@ -556,7 +556,7 @@ export const CreatePayment = async (req: Request, res: Response, next: NextFunct
     })
 
     //return transaction
-    return res.status(200).json({transaction: transaction, order: order});
+    return res.status(200).json(order);
 }
 
 export const VerifyPayment = async (req: Request, res: Response, next: NextFunction) => {
