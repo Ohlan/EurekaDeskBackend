@@ -460,9 +460,19 @@ export const GetCart = async (req: Request, res: Response, next: NextFunction) =
     
     if(customer){
         const profile = await Customer.findById(customer._id);
-
+        const cart = profile.cart
+        let cartResult: any = [];
+        for (let index = 0; index < cart.length; index++) {
+            const element = cart[index];
+            const foodObject = await Food.findById(element.food)
+            const enrichedCartItem = {
+                food: foodObject,
+                quantity: element.unit
+            }
+            cartResult.push(enrichedCartItem)
+        }
         if(profile){
-            return res.status(200).json(profile.cart);
+            return res.status(200).json(cartResult);
         }
     
     }
