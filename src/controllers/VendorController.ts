@@ -1,5 +1,5 @@
 
-import {  Request, Response ,NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { CreateCategoryInput, CreateFoodInput, CreateOfferInputs, CreateTaxInputs, EditVendorInput, VendorLoginInput } from '../dto'
 import { Category, Food } from '../models';
 import { Offer, Tax } from '../models/Offer';
@@ -12,17 +12,20 @@ import { CreateEmployeeInput, CreateRoleInput, EmployeeLoginInput, EmployeeVerif
 import { Employee, Role } from '../models/Employee';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
+import path from 'path';
+import fs from 'fs';
+import qr from 'qrcode'
 
-export const VendorLogin = async (req: Request,res: Response, next: NextFunction) => {
+export const VendorLogin = async (req: Request, res: Response, next: NextFunction) => {
 
     const { email, password } = <VendorLoginInput>req.body;
 
     const currentVendor = await FindVendor('', email);
 
-    if(currentVendor !== null){
+    if (currentVendor !== null) {
 
         const validation = await ValidatePassword(password, currentVendor.password, currentVendor.salt);
-        if(validation){
+        if (validation) {
 
             const roleRef = (await Employee.findById(currentVendor.employee[0])).role
             const role = await Role.findById(roleRef)
@@ -33,32 +36,32 @@ export const VendorLogin = async (req: Request,res: Response, next: NextFunction
                 verified: false,
                 role: role.roleName
             })
-            return res.json( {signature: signature, role: role.roleName} );
+            return res.json({ signature: signature, role: role.roleName });
         }
 
-        return res.json({'message': 'Login credential is not valid'})
+        return res.json({ 'message': 'Login credential is not valid' })
     }
 
-    return res.json({'message': 'Vendor with the given email doesn\'t exist'})
+    return res.json({ 'message': 'Vendor with the given email doesn\'t exist' })
 
 }
 
-export const EmployeeLogin = async (req: Request,res: Response, next: NextFunction) => {
+export const EmployeeLogin = async (req: Request, res: Response, next: NextFunction) => {
 
     const { vendorId, phone } = <EmployeeLoginInput>req.body;
 
-    const currentEmployee = await Employee.findOne({phone: phone});
+    const currentEmployee = await Employee.findOne({ phone: phone });
 
-    if(currentEmployee !== null){
+    if (currentEmployee !== null) {
         const { otp, expiry } = GenerateOtp();
         currentEmployee.otp = otp
         currentEmployee.otp_expiry = expiry
         await currentEmployee.save()
         await onRequestOTP(otp, phone);
-        return res.status(201).json({phone: phone})
+        return res.status(201).json({ phone: phone })
     }
 
-    return res.json({'message': 'Employee doesn\'t exist with this phone number'})
+    return res.json({ 'message': 'Employee doesn\'t exist with this phone number' })
 
 }
 
@@ -66,82 +69,82 @@ export const EmployeeVerify = async (req: Request, res: Response, next: NextFunc
 
     const customerInputs = plainToClass(EmployeeVerifyInput, req.body);
 
-    const validationError = await validate(customerInputs, {validationError: { target: true}})
+    const validationError = await validate(customerInputs, { validationError: { target: true } })
 
-    if(validationError.length > 0){
+    if (validationError.length > 0) {
         return res.status(400).json(validationError);
     }
     // const customer = req.user;
 
-    const {phone, otp} = customerInputs;
+    const { phone, otp } = customerInputs;
 
     // if(customer){
-        const profile = await Employee.findOne({phone: phone});
-        const role = await Role.findById(profile.role)
-        if(profile){
-            if(profile.otp === parseInt(otp) && profile.otp_expiry >= new Date()){
+    const profile = await Employee.findOne({ phone: phone });
+    const role = await Role.findById(profile.role)
+    if (profile) {
+        if (profile.otp === parseInt(otp) && profile.otp_expiry >= new Date()) {
 
-                const signature = await GenerateSignature({
-                    _id: profile._id,
-                    phone: profile.phone,
-                    verified: true,
-                    role: role.roleName
-                })
+            const signature = await GenerateSignature({
+                _id: profile._id,
+                phone: profile.phone,
+                verified: true,
+                role: role.roleName
+            })
 
-                return res.status(200).json({
-                    signature,
-                    phone: profile.phone,
-                    role: role
-                })
-            }
-            
+            return res.status(200).json({
+                signature,
+                phone: profile.phone,
+                role: role
+            })
         }
+
+    }
 
     // }
 
-    return res.status(400).json({ msg: 'Unable to verify Customer'});
+    return res.status(400).json({ msg: 'Unable to verify Customer' });
 }
 
-export const GetAllEmployee = async ( req: Request, res: Response, next: NextFunction ) => {
+export const GetAllEmployee = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
-    if(user){
-       const currentEmployee = await Employee.findById(user._id);
-       const employees = await Employee.find({ vendorId: currentEmployee.vendorId}).populate('role');
+    if (user) {
+        const currentEmployee = await Employee.findById(user._id);
+        const employees = await Employee.find({ vendorId: currentEmployee.vendorId }).populate('role');
 
-       if(employees !== null){
+        if (employees !== null) {
             return res.json(employees);
-       }
+        }
 
     }
-    return res.json({'message': 'Employee not found!'})
+    return res.json({ 'message': 'Employee not found!' })
 }
 
 export const GetVendorProfile = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = req.user;
-     
-    if(user){
 
-       const existingVendor = await FindVendor(user._id);
-       return res.json(existingVendor);
+    if (user) {
+
+        const existingVendor = await FindVendor(user._id);
+        return res.json(existingVendor);
     }
 
-    return res.json({'message': 'vendor Information Not Found'})
+    return res.json({ 'message': 'vendor Information Not Found' })
 }
 
 
 
-export const UpdateVendorProfile = async (req: Request,res: Response, next: NextFunction) => {
+export const UpdateVendorProfile = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = req.user;
 
-    const { foodType, name, address, phone} = <EditVendorInput>req.body;
-     
-    if(user){
+    const { foodType, name, address, phone } = <EditVendorInput>req.body;
 
-       const existingVendor = await FindVendor(user._id);
+    if (user) {
 
-       if(existingVendor !== null){
+        const existingVendor = await FindVendor(user._id);
+
+        if (existingVendor !== null) {
 
             existingVendor.name = name;
             existingVendor.address = address;
@@ -150,24 +153,24 @@ export const UpdateVendorProfile = async (req: Request,res: Response, next: Next
             const saveResult = await existingVendor.save();
 
             return res.json(saveResult);
-       }
+        }
 
     }
-    return res.json({'message': 'Unable to Update vendor profile '})
+    return res.json({ 'message': 'Unable to Update vendor profile ' })
 
 }
 
 
 
-export const UpdateVendorCoverImage = async (req: Request,res: Response, next: NextFunction) => {
+export const UpdateVendorCoverImage = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = req.user;
 
-     if(user){
+    if (user) {
 
-       const vendor = await FindVendor(user._id);
+        const vendor = await FindVendor(user._id);
 
-       if(vendor !== null){
+        if (vendor !== null) {
 
             const files = req.files as [Express.Multer.File];
 
@@ -176,58 +179,58 @@ export const UpdateVendorCoverImage = async (req: Request,res: Response, next: N
             vendor.coverImages.push(...images);
 
             const saveResult = await vendor.save();
-            
+
             return res.json(saveResult);
-       }
+        }
 
     }
-    return res.json({'message': 'Unable to Update vendor profile '})
+    return res.json({ 'message': 'Unable to Update vendor profile ' })
 
 }
 
-export const UpdateVendorService = async (req: Request,res: Response, next: NextFunction) => {
+export const UpdateVendorService = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = req.user;
 
-    const { lat, lng} = req.body;
-     
-    if(user){
+    const { lat, lng } = req.body;
 
-       const existingVendor = await FindVendor(user._id);
+    if (user) {
 
-       if(existingVendor !== null){
+        const existingVendor = await FindVendor(user._id);
+
+        if (existingVendor !== null) {
 
             existingVendor.serviceAvailable = !existingVendor.serviceAvailable;
-            if(lat && lng){
+            if (lat && lng) {
                 existingVendor.lat = lat;
                 existingVendor.lng = lng;
             }
             const saveResult = await existingVendor.save();
 
             return res.json(saveResult);
-       }
+        }
 
     }
-    return res.json({'message': 'Unable to Update vendor profile '})
+    return res.json({ 'message': 'Unable to Update vendor profile ' })
 
 }
 
 export const AddCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-            const user = req.user;
+        const user = req.user;
 
         const { name, description } = <CreateCategoryInput>req.body;
-        
-        if(user){
 
-        const vendor = await FindVendor(user._id);
+        if (user) {
 
-        if(vendor !== null){
+            const vendor = await FindVendor(user._id);
+
+            if (vendor !== null) {
 
                 const files = req.files as [Express.Multer.File];
 
                 const images = files.map((file: Express.Multer.File) => file.filename);
-                
+
                 const category = await Category.create({
                     vendorId: vendor.id,
                     name: name,
@@ -237,12 +240,12 @@ export const AddCategory = async (req: Request, res: Response, next: NextFunctio
                 vendor.categories.push(category);
                 const result = await vendor.save();
                 return res.json(result);
-        }
+            }
 
         }
-        return res.json({'message': 'Unable to add category'})
+        return res.json({ 'message': 'Unable to add category' })
     }
-    catch(error) {
+    catch (error) {
         return res.status(500).json(error.message);
     }
 }
@@ -250,18 +253,18 @@ export const AddCategory = async (req: Request, res: Response, next: NextFunctio
 export const GetCategories = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = req.user;
- 
-    if(user){
+
+    if (user) {
 
         const vendor = await FindVendor(user._id)
-       const categories = await Category.find({ vendorId: vendor.id});
+        const categories = await Category.find({ vendorId: vendor.id });
 
-       if(categories !== null){
+        if (categories !== null) {
             return res.json(categories);
-       }
+        }
 
     }
-    return res.json({'message': 'Categories not found!'})
+    return res.json({ 'message': 'Categories not found!' })
 }
 
 export const AddFood = async (req: Request, res: Response, next: NextFunction) => {
@@ -270,17 +273,17 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
         const user = req.user;
 
         const { name, description, category, foodType, readyTime, price } = <CreateFoodInput>req.body;
-        
-        if(user){
 
-        const vendor = await FindVendor(user._id);
+        if (user) {
 
-        if(vendor !== null){
+            const vendor = await FindVendor(user._id);
+
+            if (vendor !== null) {
 
                 const files = req.files as [Express.Multer.File];
 
                 const images = files.map((file: Express.Multer.File) => file.filename);
-                
+
                 const food = await Food.create({
                     vendorId: vendor.id,
                     name: name,
@@ -292,68 +295,68 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
                     images: images,
                     foodType: foodType
                 })
-                const categoryRef = await Category.findOne({ vendorId: vendor.id, name: category})
+                const categoryRef = await Category.findOne({ vendorId: vendor.id, name: category })
                 categoryRef.allFoods.push(food)
                 await categoryRef.save();
                 vendor.foods.push(food);
                 const result = await vendor.save();
                 return res.json(result);
-        }
+            }
 
         }
-        return res.json({'message': 'Unable to Update vendor profile '})
+        return res.json({ 'message': 'Unable to Update vendor profile ' })
     }
-    catch(error) {
+    catch (error) {
         return res.status(500).json(error.message);
     }
 }
 
 export const GetFoods = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
- 
-    if(user){
-        const vendor = await FindVendor(user._id)
-       const foods = await Food.find({ vendorId: vendor.id});
 
-       if(foods !== null){
+    if (user) {
+        const vendor = await FindVendor(user._id)
+        const foods = await Food.find({ vendorId: vendor.id });
+
+        if (foods !== null) {
             return res.json(foods);
-       }
+        }
 
     }
-    return res.json({'message': 'Foods not found!'})
+    return res.json({ 'message': 'Foods not found!' })
 }
 
 
 export const GetCurrentOrders = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = req.user;
-    
-    if(user){
 
-        const orders = await Order.find({ vendorId: user._id}).populate('items.food');
+    if (user) {
 
-        if(orders != null){
+        const orders = await Order.find({ vendorId: user._id }).populate('items.food');
+
+        if (orders != null) {
             return res.status(200).json(orders);
         }
     }
 
-    return res.json({ message: 'Orders Not found'});
+    return res.json({ message: 'Orders Not found' });
 }
 
 export const GetOrderDetails = async (req: Request, res: Response, next: NextFunction) => {
 
     const orderId = req.params.id;
-    
-    if(orderId){
+
+    if (orderId) {
 
         const order = await Order.findById(orderId).populate('items.food');
 
-        if(order != null){
+        if (order != null) {
             return res.status(200).json(order);
         }
     }
 
-    return res.json({ message: 'Order Not found'});
+    return res.json({ message: 'Order Not found' });
 }
 
 export const ProcessOrder = async (req: Request, res: Response, next: NextFunction) => {
@@ -362,25 +365,25 @@ export const ProcessOrder = async (req: Request, res: Response, next: NextFuncti
 
     const { status, remarks, time } = req.body;
 
-    
-    if(orderId){
+
+    if (orderId) {
 
         const order = await Order.findById(orderId).populate('food');
 
         order.orderStatus = status;
         order.remarks = remarks;
-        if(time){
+        if (time) {
             order.readyTime = time;
         }
 
         const orderResult = await order.save();
 
-        if(orderResult != null){
+        if (orderResult != null) {
             return res.status(200).json(orderResult);
         }
     }
 
-    return res.json({ message: 'Unable to process order'});
+    return res.json({ message: 'Unable to process order' });
 }
 
 export const GetOffers = async (req: Request, res: Response, next: NextFunction) => {
@@ -388,25 +391,25 @@ export const GetOffers = async (req: Request, res: Response, next: NextFunction)
 
     const user = req.user;
 
-    if(user){
+    if (user) {
         let currentOffer = Array();
 
         const offers = await Offer.find().populate('vendors');
 
-        if(offers){
+        if (offers) {
 
 
             offers.map(item => {
 
-                if(item.vendors){
+                if (item.vendors) {
                     item.vendors.map(vendor => {
-                        if(vendor._id.toString() === user._id){
+                        if (vendor._id.toString() === user._id) {
                             currentOffer.push(item);
                         }
                     })
                 }
 
-                if(item.offerType === "GENERIC"){
+                if (item.offerType === "GENERIC") {
                     currentOffer.push(item)
                 }
 
@@ -418,7 +421,7 @@ export const GetOffers = async (req: Request, res: Response, next: NextFunction)
 
     }
 
-    return res.json({ message: 'Offers Not available'});
+    return res.json({ message: 'Offers Not available' });
 }
 
 
@@ -427,13 +430,13 @@ export const AddOffer = async (req: Request, res: Response, next: NextFunction) 
 
     const user = req.user;
 
-    if(user){
+    if (user) {
         const { title, description, offerType, offerAmount, pincode,
-        promocode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
+            promocode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
 
         const vendor = await FindVendor(user._id);
 
-        if(vendor){
+        if (vendor) {
 
             const offer = await Offer.create({
                 title,
@@ -447,7 +450,7 @@ export const AddOffer = async (req: Request, res: Response, next: NextFunction) 
                 bank,
                 isActive,
                 minValue,
-                vendor:[vendor]
+                vendor: [vendor]
             })
 
             console.log(offer);
@@ -458,7 +461,7 @@ export const AddOffer = async (req: Request, res: Response, next: NextFunction) 
 
     }
 
-    return res.json({ message: 'Unable to add Offer!'});
+    return res.json({ message: 'Unable to add Offer!' });
 
 }
 
@@ -468,40 +471,40 @@ export const EditOffer = async (req: Request, res: Response, next: NextFunction)
     const user = req.user;
     const offerId = req.params.id;
 
-    if(user){
+    if (user) {
         const { title, description, offerType, offerAmount, pincode,
-        promocode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
+            promocode, promoType, startValidity, endValidity, bank, bins, minValue, isActive } = <CreateOfferInputs>req.body;
 
         const currentOffer = await Offer.findById(offerId);
 
-        if(currentOffer){
+        if (currentOffer) {
 
             const vendor = await FindVendor(user._id);
 
-            if(vendor){
-           
+            if (vendor) {
+
                 currentOffer.title = title,
-                currentOffer.description = description,
-                currentOffer.offerType = offerType,
-                currentOffer.offerAmount = offerAmount,
-                currentOffer.pincode = pincode,
-                currentOffer.promoType = promoType,
-                currentOffer.startValidity = startValidity,
-                currentOffer.endValidity = endValidity,
-                currentOffer.bank = bank,
-                currentOffer.isActive = isActive,
-                currentOffer.minValue = minValue;
+                    currentOffer.description = description,
+                    currentOffer.offerType = offerType,
+                    currentOffer.offerAmount = offerAmount,
+                    currentOffer.pincode = pincode,
+                    currentOffer.promoType = promoType,
+                    currentOffer.startValidity = startValidity,
+                    currentOffer.endValidity = endValidity,
+                    currentOffer.bank = bank,
+                    currentOffer.isActive = isActive,
+                    currentOffer.minValue = minValue;
 
                 const result = await currentOffer.save();
 
                 return res.status(200).json(result);
             }
-            
+
         }
 
     }
 
-    return res.json({ message: 'Unable to add Offer!'});    
+    return res.json({ message: 'Unable to add Offer!' });
 
 }
 
@@ -510,23 +513,42 @@ export const AddTable = async (req: Request, res: Response, next: NextFunction) 
     const user = req.user;
 
     const { tableNumber, capacity } = <CreateTableInputs>req.body;
-     
-    if(user){
 
-       const vendor = await FindVendor(user._id);
+    if (user) {
 
-       if(vendor !== null){
-            
+        const vendor = await FindVendor(user._id);
+
+        if (vendor !== null) {
+
             const table = await Table.create({
                 vendorId: vendor._id,
                 tableNumber: tableNumber,
                 capacity: capacity
             })
-            return res.json(table);
-       }
+
+            const qrCodeDirectory = path.join(__dirname, '../../qr-codes');
+            if (!fs.existsSync(qrCodeDirectory)) {
+                fs.mkdirSync(qrCodeDirectory);
+            }
+
+            const url = `https://social.eurekadesk.in/dinein/${tableNumber}`; // Replace with your desired URL
+            const qrCodeName = `${vendor._id}_${tableNumber}_qr-code.png`; // Specify a name for the QR code
+            const outputPath = path.join(qrCodeDirectory, qrCodeName);
+
+            qr.toFile(outputPath, url, (err) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Failed to generate the QR code' });
+                } else {
+                    const publicURL = `${req.protocol}://${req.get('host')}/qr-codes/${qrCodeName}`;
+                    return res.json({ table: table, qrCodeURL: publicURL });
+                }
+            })
+        }
 
     }
-    return res.json({'message': 'Unable to add table'})
+    else {
+        return res.json({ 'message': 'Unable to add table' })
+    }
 }
 
 export const UpdateTable = async (req: Request, res: Response, next: NextFunction) => {
@@ -534,14 +556,14 @@ export const UpdateTable = async (req: Request, res: Response, next: NextFunctio
     const user = req.user;
 
     const { tableNumber, isFree, currentOrder } = <UpdateTableInputs>req.body;
-     
-    if(user){
+
+    if (user) {
         const vendor = await FindVendor(user._id)
 
-        const requiredTable = await Table.findOne({vendorId: vendor.id, tableNumber: tableNumber});
+        const requiredTable = await Table.findOne({ vendorId: vendor.id, tableNumber: tableNumber });
 
-        if(requiredTable !== null){
- 
+        if (requiredTable !== null) {
+
             requiredTable.isFree = isFree;
             requiredTable.currentOrder.push;
 
@@ -550,49 +572,49 @@ export const UpdateTable = async (req: Request, res: Response, next: NextFunctio
             }
 
             const saveResult = await requiredTable.save();
- 
+
             return res.json(saveResult);
         }
- 
-     }
-     return res.json({'message': 'Unable to update table details '})
+
+    }
+    return res.json({ 'message': 'Unable to update table details ' })
 }
 
 export const GetTables = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
- 
-    if(user){
-    
+
+    if (user) {
+
         const vendor = await FindVendor(user._id)
 
-       const tables = await Table.find({ vendorId: vendor.id});
+        const tables = await Table.find({ vendorId: vendor.id });
 
-       if(tables !== null){
+        if (tables !== null) {
             return res.json(tables);
-       }
+        }
 
     }
-    return res.json({'message': 'Tables not found!'})
+    return res.json({ 'message': 'Tables not found!' })
 }
 
 export const GetPermissions = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
-    if(user) {
-        return res.json({permissions: Permissions});
+    if (user) {
+        return res.json({ permissions: Permissions });
     }
 
-    return res.json({'message': 'Permissions not found'})
+    return res.json({ 'message': 'Permissions not found' })
 }
 
 export const AddRole = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
-    if(user) {
+    if (user) {
 
-        const {roleName, permissions} = <CreateRoleInput>req.body
+        const { roleName, permissions } = <CreateRoleInput>req.body
 
-        if(await Role.findOne({roleName: roleName}) != null) {
+        if (await Role.findOne({ roleName: roleName }) != null) {
             return res.json('Role already exists');
         }
 
@@ -605,51 +627,50 @@ export const AddRole = async (req: Request, res: Response, next: NextFunction) =
         return res.json(newRole);
     }
 
-    return res.json({'message': 'unable to add role'})
+    return res.json({ 'message': 'unable to add role' })
 }
 
 export const EditRole = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
-    if(user) {
+    if (user) {
         const vendor = await FindVendor(user._id)
-        const {roleName, permissions} = <CreateRoleInput>req.body
-        const role = await Role.findOne({vendorId: vendor.id, roleName: roleName})
-        if(role != null) {
+        const { roleName, permissions } = <CreateRoleInput>req.body
+        const role = await Role.findOne({ vendorId: vendor.id, roleName: roleName })
+        if (role != null) {
             role.roleName = roleName
             role.permissions = permissions
             await role.save()
             return res.json(role);
         }
 
-        return res.json({'message': 'role doesn\'t exist'});
+        return res.json({ 'message': 'role doesn\'t exist' });
     }
 
-    return res.json({'message': 'unable to add role'})
+    return res.json({ 'message': 'unable to add role' })
 
 }
 
 export const AddEmployee = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
-    if(user) {
+    if (user) {
         const vendor = await FindVendor(user._id)
 
-        const {name, email, phone, role} = plainToClass(CreateEmployeeInput, req.body);
-        const validationError = await validate(CreateEmployeeInput, {validationError: { target: true}})
+        const { name, email, phone, role } = plainToClass(CreateEmployeeInput, req.body);
+        const validationError = await validate(CreateEmployeeInput, { validationError: { target: true } })
 
-        if(validationError.length > 0){
+        if (validationError.length > 0) {
             return res.status(400).json(validationError);
         }
 
-        const roleRef = await Role.findOne({roleName: role})
+        const roleRef = await Role.findOne({ roleName: role })
 
-        if(await Employee.findOne({phone: phone, vendorId: vendor.id}) != null) {
+        if (await Employee.findOne({ phone: phone, vendorId: vendor.id }) != null) {
             return res.json('Employee with this phone no. already exists');
         }
 
-        if(vendor != null && roleRef != null)
-        {
+        if (vendor != null && roleRef != null) {
             const employee = await Employee.create({
                 vendorId: vendor.id,
                 name: name,
@@ -663,49 +684,48 @@ export const AddEmployee = async (req: Request, res: Response, next: NextFunctio
         }
     }
 
-    return res.json({'message': 'unable to add employee'})
+    return res.json({ 'message': 'unable to add employee' })
 }
 
 export const UpdateEmployeeDetails = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
-    if(user) {
-        
+    if (user) {
+
         const vendor = await FindVendor(user._id);
 
-        const {name, email, phone, role} = plainToClass(CreateEmployeeInput, req.body);
+        const { name, email, phone, role } = plainToClass(CreateEmployeeInput, req.body);
 
-        const validationError = await validate(CreateEmployeeInput, {validationError: { target: true}})
+        const validationError = await validate(CreateEmployeeInput, { validationError: { target: true } })
 
-        if(validationError.length > 0){
+        if (validationError.length > 0) {
             return res.status(400).json(validationError);
         }
 
-        const roleRef = await Role.findOne({roleName: role})
-        const employee = await Employee.findOne({vendorId: vendor.id, phone: phone})
-        if(employee != null)
-        {
+        const roleRef = await Role.findOne({ roleName: role })
+        const employee = await Employee.findOne({ vendorId: vendor.id, phone: phone })
+        if (employee != null) {
             employee.name = name,
-            employee.email = email,
-            employee.phone = phone,
-            employee.role = roleRef
+                employee.email = email,
+                employee.phone = phone,
+                employee.role = roleRef
             await employee.save()
             return res.json(employee)
         }
-        return res.json({'message':'Employee with this phone no. doesn\'t exists'});
+        return res.json({ 'message': 'Employee with this phone no. doesn\'t exists' });
     }
 
-    return res.json({'message': 'unable to update employee details'})
+    return res.json({ 'message': 'unable to update employee details' })
 }
 
 export const AddTax = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
-    if(user) {
+    if (user) {
 
-        const {name, isApplicable, rate} = <CreateTaxInputs>req.body
+        const { name, isApplicable, rate } = <CreateTaxInputs>req.body
 
-        if(await Tax.findOne({name: name}) != null) {
+        if (await Tax.findOne({ name: name }) != null) {
             return res.json('Tax already exists');
         }
         const vendor = await FindVendor(user._id)
@@ -719,18 +739,18 @@ export const AddTax = async (req: Request, res: Response, next: NextFunction) =>
         return res.json(newTax);
     }
 
-    return res.json({'message': 'unable to add tax'})
+    return res.json({ 'message': 'unable to add tax' })
 }
 
 export const EditTax = async (req: Request, res: Response, next: NextFunction) => {
 
     const user = req.user;
     const taxId = req.params.taxId;
-    if(user) {
-        const {name, isApplicable, rate} = <CreateTaxInputs>req.body
+    if (user) {
+        const { name, isApplicable, rate } = <CreateTaxInputs>req.body
 
         const tax = await Tax.findById(taxId)
-        if(tax != null) {
+        if (tax != null) {
             tax.name = name
             tax.isApplicable = isApplicable
             tax.rate = rate
@@ -738,27 +758,27 @@ export const EditTax = async (req: Request, res: Response, next: NextFunction) =
             return res.json(tax);
         }
 
-        return res.json({'message': 'tax doesn\'t exist'});
+        return res.json({ 'message': 'tax doesn\'t exist' });
     }
 
-    return res.json({'message': 'unable to update tax'})
+    return res.json({ 'message': 'unable to update tax' })
 
 }
 
 export const GetTaxes = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
-    if(user){
+    if (user) {
 
         const vendor = await FindVendor(user._id)
-        const taxes = await Tax.find({ vendorId: vendor.id});
- 
-        if(taxes !== null){
-             return res.json(taxes);
+        const taxes = await Tax.find({ vendorId: vendor.id });
+
+        if (taxes !== null) {
+            return res.json(taxes);
         }
- 
-     }
-     return res.json({'message': 'Taxes not found!'})
+
+    }
+    return res.json({ 'message': 'Taxes not found!' })
 }
 
 // const AuthenticateAcess = async (req: Request, permission: string) => {

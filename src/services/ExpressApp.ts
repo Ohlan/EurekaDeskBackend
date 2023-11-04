@@ -26,8 +26,10 @@ export default async(app: Application) => {
     app.use(cors(corsOptions))
  
     const imagePath = path.join(__dirname,'../../images');
+    const qrCodeDirectory = path.join(__dirname, '../../qr-codes');
     
     app.use('/images', express.static(imagePath));
+    app.use('/qr-codes', express.static(qrCodeDirectory));
     
     app.use('/admin', AdminRoute);
     app.use('/vendor', VandorRoute)
