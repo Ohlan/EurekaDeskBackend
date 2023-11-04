@@ -25,7 +25,7 @@ export default async(app: Application) => {
 
     app.use(cors(corsOptions))
  
-    const imagePath = path.join(__dirname,'../images');
+    const imagePath = path.join(__dirname,'../../images');
     
     app.use('/images', express.static(imagePath));
     
