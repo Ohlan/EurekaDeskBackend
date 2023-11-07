@@ -295,7 +295,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "/Users/pushpendrakumar/Documents/images/top-view-table-full-delicious-food-composition_23-2149141353.avif"
+									"src": "/Users/pushpendrakumar/Documents/images/item1.jpeg"
 								}
 							]
 						},
@@ -392,7 +392,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"tableNumber\": \"1\",\n    \"capacity\": \"3\"\n}",
+							"raw": "{\n    \"tableNumber\": \"3\",\n    \"capacity\": \"3\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -776,6 +776,25 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Restaurant- Delete table by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/table/654a14b7a51e52729ba09cbb",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"table",
+								"654a14b7a51e52729ba09cbb"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -783,7 +802,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTNmNGFkZjVhMWJhMDU2ZDMzNDYyOTUiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6ZmFsc2UsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5ODY0Njc2MSwiZXhwIjoxNzA2NDIyNzYxfQ.CxuLVqTowYf_7OxFu1YGIohxJujb7mpMMIYxSUf0GgU",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTQ5ZmUzOTA4NmU5MzY5YzNkYzAxOTUiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6ZmFsc2UsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5OTM0ODAzMSwiZXhwIjoxNzA3MTI0MDMxfQ.GBC5yQbTVbamAhr5dx5b8XYuDJP3tSgxKQt_R3A82XE",
 						"type": "string"
 					}
 				]
@@ -1210,6 +1229,14 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Food - Get table urls",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -1442,7 +1469,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"orderCreationId\": \"\",\n    \"razorpayPaymentId\": \"\",\n    \"razorpayOrderId\": \"\",\n    \"razorpaySignature\": \"\"\n}",
+							"raw": "{\n    \"orderCreationId\": \"order_MvlExSsbsktLCS\",\n    \"razorpayPaymentId\": \"pay_MvlF9AvSmnyVU6\",\n    \"razorpayOrderId\": \"order_MvlExSsbsktLCS\",\n    \"razorpaySignature\": \"db1e76809f19ac59a283e3577aa730cd85b3736afed6fc2261b777ba30faa17f\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
