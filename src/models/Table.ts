@@ -6,7 +6,9 @@ interface TableDoc extends Document {
     tableNumber: string;
     capacity: string;
     isFree: boolean;
-    currentOrder: any
+    qr: string;
+    tableUrl: string;
+    currentOrder: any;
 }
 
 
@@ -15,6 +17,8 @@ const TableSchema = new Schema({
     tableNumber:{ type: String, required: true},
     capacity: { type: String, required: true},
     isFree: { type: Boolean},
+    qr: {type: String},
+    tableUrl: {type: String},
     currentOrder: [{
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'food'

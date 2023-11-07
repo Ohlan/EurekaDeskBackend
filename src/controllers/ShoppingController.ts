@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Category, Food, FoodDoc, Vendor } from '../models';
 import { Offer } from '../models/Offer';
+import { Table } from '../models/Table';
 
 export const GetFoodAvailability = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -136,5 +137,21 @@ export const GetFoodsByCategory = async (req: Request, res: Response, next: Next
     if(foods != null){
         return res.status(200).json(foods);
     }
+    return res.status(404).json({ msg: 'data Not found!'});
+}
+
+export const GetTableUrls = async (req: Request, res: Response, next: NextFunction) => {
+
+    const vendorId = req.params.id;
+    
+    const tables = await Table.find({vendorId: vendorId});
+ 
+    if(tables.length > 0) {
+        let qrs: any = []
+        for(var i = 0; i<tables.length; i++)
+            qrs.push(tables[i].tableUrl)
+        return res.status(200).json(qrs);
+    }
+    
     return res.status(404).json({ msg: 'data Not found!'});
 }

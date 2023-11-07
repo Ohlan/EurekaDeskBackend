@@ -1,5 +1,5 @@
 import express from 'express';
-import { GetAllCategories, GetAllFoods, GetAvailableOffers, GetFoodAvailability, GetFoodById, GetFoodsByCategory, GetFoodsIn30Min, GetTopRestaurants, RestaurantById, SearchFoods } from '../controllers';
+import { GetAllCategories, GetAllFoods, GetAvailableOffers, GetFoodAvailability, GetFoodById, GetFoodsByCategory, GetFoodsIn30Min, GetTableUrls, GetTopRestaurants, RestaurantById, SearchFoods } from '../controllers';
 
 const router = express.Router();
 
@@ -34,5 +34,8 @@ router.get('/categories/:id', GetAllCategories)
 
 /* ------------------- Get Food by Category Name --------------------- */
 router.get('/categories/:id/:categoryName', GetFoodsByCategory)
+
+/* ------------------- Get Table urls by table Name --------------------- */
+router.get('/table/:id', GetTableUrls)
 
 export { router as ShoppingRoute}

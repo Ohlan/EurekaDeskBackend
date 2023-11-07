@@ -311,6 +311,21 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
+export const DeleteFoodById = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    const id = req.params.id;
+
+    if (user) {
+        const food = await Food.findById(id)
+        if(food != null) {
+            await Food.deleteOne({_id: id})
+            return res.json('transaction successful')
+        }
+        return res.json("food not found")
+    }
+    return res.json({ 'message': 'not authorised!' })
+}
+
 export const GetFoods = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
@@ -540,7 +555,10 @@ export const AddTable = async (req: Request, res: Response, next: NextFunction) 
                     return res.status(500).json({ error: 'Failed to generate the QR code' });
                 } else {
                     const publicURL = `${req.protocol}://${req.get('host')}/qr-codes/${qrCodeName}`;
-                    return res.json({ table: table, qrCodeURL: publicURL });
+                    table.qr = publicURL
+                    table.tableUrl = url
+                    table.save()
+                    return res.json({ table: table });
                 }
             })
         }
@@ -593,6 +611,21 @@ export const GetTables = async (req: Request, res: Response, next: NextFunction)
             return res.json(tables);
         }
 
+    }
+    return res.json({ 'message': 'not authorised' })
+}
+
+export const DeleteTableById = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    const id = req.params.id;
+
+    if (user) {
+        const table = await Table.findById(id)
+        if(table != null) {
+            await Table.deleteOne({_id: id})
+            return res.json('transaction successful')
+        }
+        return res.json("table not found")
     }
     return res.json({ 'message': 'Tables not found!' })
 }
