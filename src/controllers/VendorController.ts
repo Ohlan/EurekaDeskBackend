@@ -4,7 +4,7 @@ import { CreateCategoryInput, CreateFoodInput, CreateOfferInputs, CreateTaxInput
 import { Category, Food } from '../models';
 import { Offer, Tax } from '../models/Offer';
 import { Order } from '../models/Order';
-import { GenerateOtp, GenerateSignature, ValidatePassword, onRequestOTP } from '../utility';
+import { GenerateOtp, GenerateSignature, Permissions, ValidatePassword, onRequestOTP } from '../utility';
 import { FindVendor } from './AdminController';
 import { CreateTableInputs, UpdateTableInputs } from '../dto/Table.dto';
 import { Table } from '../models/Table';
@@ -538,7 +538,8 @@ export const AddTable = async (req: Request, res: Response, next: NextFunction) 
             const table = await Table.create({
                 vendorId: vendor._id,
                 tableNumber: tableNumber,
-                capacity: capacity
+                capacity: capacity,
+                isFree: true
             })
 
             const qrCodeDirectory = path.join(__dirname, '../../qr-codes');
@@ -634,7 +635,8 @@ export const GetPermissions = async (req: Request, res: Response, next: NextFunc
     const user = req.user;
 
     if (user) {
-        return res.json({ permissions: Permissions });
+        const permisions = Permissions
+        return res.json({ permissions: permisions });
     }
 
     return res.json({ 'message': 'Permissions not found' })
