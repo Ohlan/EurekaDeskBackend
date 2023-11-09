@@ -336,7 +336,9 @@ export const CreateOrder = async (req: Request, res: Response, next: NextFunctio
                 orderStatus: 'Waiting',
                 remarks: '',
                 deliveryId: '',
-                readyTime: 45
+                readyTime: 45,
+                customerName: profile.firstName,
+                customerPhone: profile.phone
             })
 
             profile.cart = [] as any;

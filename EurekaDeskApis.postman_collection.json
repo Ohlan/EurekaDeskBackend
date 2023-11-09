@@ -795,6 +795,62 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get Permissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/permissions",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Checkout",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"amar\",\n    \"phone\":\"9988998899\",\n    \"amount\":\"560\",\n    \"items\": [\n     {\n        \"_id\": \"651a9ea7d71bd495af30a110\",\n        \"unit\": 3\n     },\n     {\n        \"_id\": \"651a9ee3d71bd495af30a115\",\n        \"unit\": 1\n     }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{$randomLocale}}/vendor/order",
+							"host": [
+								"{{$randomLocale}}"
+							],
+							"path": [
+								"vendor",
+								"order"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -1495,7 +1551,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTNmNjgzMTQ5NTliYjY1YzE2YjEyZGEiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk4NjU0MjgyLCJleHAiOjE3MDY0MzAyODJ9.fp-o4qDEtaDjutQQPl0jMrB7QFEQV3Zj1oTqtLehpg8",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTRhMmVkODIxYjNlZTc4ODFhZGZiODEiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk5MzYwNTA0LCJleHAiOjE3MDcxMzY1MDR9.sI22ZVMekAzz_D5MxIJxNWC55Wz_4uefzp1SlAlDjm4",
 						"type": "string"
 					}
 				]

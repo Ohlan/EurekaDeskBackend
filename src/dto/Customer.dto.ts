@@ -57,7 +57,12 @@ export class OrderInputs {
     items: [CartItem];
 }
 
-
+export class OrderCheckout {
+    name: string;
+    phone: string;
+    amount: string;
+    items: [CartItem];
+}
 
 export class CreateDeliveryUserInput {
     @IsEmail()
