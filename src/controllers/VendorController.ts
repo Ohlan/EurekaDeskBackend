@@ -1,7 +1,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { CreateCategoryInput, CreateFoodInput, CreateOfferInputs, CreateTaxInputs, EditVendorInput, OrderCheckout, VendorLoginInput } from '../dto'
-import { Category, Food } from '../models';
+import { Category, Customer, Food } from '../models';
 import { Offer, Tax } from '../models/Offer';
 import { Order } from '../models/Order';
 import { GenerateOtp, GenerateSignature, Permissions, ValidatePassword, onRequestOTP } from '../utility';
@@ -861,6 +861,7 @@ export const CreateOrderAtCheckout = async (req: Request, res: Response, next: N
                 remarks: '',
                 deliveryId: '',
                 readyTime: 45,
+                orderType:"checkout",
                 customerName: name,
                 customerPhone: phone
             })
@@ -872,4 +873,21 @@ export const CreateOrderAtCheckout = async (req: Request, res: Response, next: N
     }
 
     return res.status(400).json({ msg: 'Error while Creating Order'});
+}
+
+export const GetCustomers = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if (user) {
+
+        const vendor = await FindVendor(user._id)
+
+        const customers = await Customer.find({ vendorId: vendor.id });
+
+        if (customers !== null) {
+            return res.json(customers);
+        }
+
+    }
+    return res.json({ 'message': 'not authorised' })
 }

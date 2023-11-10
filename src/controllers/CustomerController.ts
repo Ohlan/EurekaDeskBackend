@@ -215,21 +215,6 @@ export const EditCustomerProfile = async (req: Request, res: Response, next: Nex
 
 }
 
-export const GetCustomers = async ( req: Request, res: Response, next: NextFunction ) => {
-    const user = req.user;
- 
-    if(user){
-
-       const customers = await Customer.find({ vendorId: user._id});
-
-       if(customers !== null){
-            return res.json(customers);
-       }
-
-    }
-    return res.json({'message': 'Customers not found!'})
-}
-
 /* ------------------- Delivery Notification --------------------- */
 
 const assignOrderForDelivery = async(orderId: string, vendorId: string) => {
