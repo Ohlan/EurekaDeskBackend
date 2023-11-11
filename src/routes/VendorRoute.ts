@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails, EditTax, AddTax, GetTaxes, DeleteTableById, DeleteFoodById, CreateOrder, CreateOrderAtCheckout, GetCustomers } from '../controllers';
+import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails, EditTax, AddTax, GetTaxes, DeleteTableById, DeleteFoodById, CreateOrder, CreateOrderAtCheckout, GetCustomers, GetRoles } from '../controllers';
 import { Authenticate } from '../middleware';
 import multer from 'multer';
 import fs from 'fs';
@@ -60,6 +60,7 @@ router.patch('/employee', UpdateEmployeeDetails)
 
 router.post('/role', AddRole)
 router.patch('/role', EditRole)
+router.get('/roles', GetRoles)
 router.get('/permissions', GetPermissions)
 
 //Offers

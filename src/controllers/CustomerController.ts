@@ -10,6 +10,7 @@ import { GenerateOtp, GenerateSignature, onRequestOTP } from '../utility';
 import Razorpay from 'razorpay';
 import { RAZORPAY_KEY_ID, RAZORPAY_SECRET } from '../config';
 import crypto from 'crypto';
+import { FindVendor, FindVendorById } from './AdminController';
 
 export const CustomerSignUp = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -297,23 +298,23 @@ export const CreateOrder = async (req: Request, res: Response, next: NextFunctio
 
         let vendorId;
 
-        const foods = await Food.find().where('_id').in(cart.map(item => item._id)).exec();
+        // const foods = await Food.find().where('_id').in(cart.map(item => item._id)).exec();
 
-        foods.map(food => {
-            cart.map(({ _id, unit}) => {
-                if(food._id == _id){
-                    vendorId = food.vendorId;
-                    netAmount += (food.price * unit);
-                    cartItems.push({ food, unit})
-                }
-            })
-        })
+        // foods.map(food => {
+        //     cart.map(({ _id, unit}) => {
+        //         if(food._id == _id){
+        //             vendorId = food.vendorId;
+        //             netAmount += (food.price * unit);
+        //             cartItems.push({ food, unit})
+        //         }
+        //     })
+        // })
 
         if(cartItems){
 
             const currentOrder = await Order.create({
                 orderId: orderId,
-                vendorId: vendorId,
+                vendorId: "6549fe39086e9369c3dc0191",
                 items: cartItems,
                 totalAmount: netAmount,
                 paidAmount: amount,
@@ -328,8 +329,9 @@ export const CreateOrder = async (req: Request, res: Response, next: NextFunctio
 
             profile.cart = [] as any;
             profile.orders.push(currentOrder);
- 
-
+            const vendor = await FindVendorById("6549fe39086e9369c3dc0191")
+            vendor.customers.push(profile);
+            await vendor.save();
             currentTransaction.vendorId = vendorId;
             currentTransaction.orderId = orderId;
             currentTransaction.status = 'CONFIRMED'
@@ -553,7 +555,7 @@ export const CreatePayment = async (req: Request, res: Response, next: NextFunct
     })
 
     //return transaction
-    return res.status(200).json(order);
+    return res.status(200).json({order, transaction});
 }
 
 export const VerifyPayment = async (req: Request, res: Response, next: NextFunction) => {

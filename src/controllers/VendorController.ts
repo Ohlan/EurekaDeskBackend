@@ -9,7 +9,7 @@ import { FindVendor } from './AdminController';
 import { CreateTableInputs, UpdateTableInputs } from '../dto/Table.dto';
 import { Table } from '../models/Table';
 import { CreateEmployeeInput, CreateRoleInput, EmployeeLoginInput, EmployeeVerifyInput } from '../dto/Employee.dto';
-import { Employee, Role } from '../models/Employee';
+import { Employee, Role, RoleDoc } from '../models/Employee';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import path from 'path';
@@ -36,7 +36,7 @@ export const VendorLogin = async (req: Request, res: Response, next: NextFunctio
                 verified: false,
                 role: role.roleName
             })
-            return res.json({ signature: signature, role: role.roleName });
+            return res.json({ signature: signature, role: role.permissions });
         }
 
         return res.json({ 'message': 'Login credential is not valid' })
@@ -683,7 +683,22 @@ export const EditRole = async (req: Request, res: Response, next: NextFunction) 
     }
 
     return res.json({ 'message': 'unable to add role' })
+}
 
+export const GetRoles = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if (user) {
+
+        const vendor = await FindVendor(user._id)
+
+        const roles = await Role.find({ vendorId: vendor.id });
+
+        if (roles !== null) {
+            return res.json(roles);
+        }
+    }
+    return res.json({ 'message': 'not authorised' })
 }
 
 export const AddEmployee = async (req: Request, res: Response, next: NextFunction) => {
@@ -881,12 +896,23 @@ export const GetCustomers = async (req: Request, res: Response, next: NextFuncti
     if (user) {
 
         const vendor = await FindVendor(user._id)
-
-        const customers = await Customer.find({ vendorId: vendor.id });
-
-        if (customers !== null) {
-            return res.json(customers);
+        let customer:any  = []
+        for(var i=0;i<vendor.customers.length;i++) {
+            var obj = await Customer.findById(vendor.customers[i])
+            customer.push(obj)
         }
+        return res.json(customer)
+    }
+    return res.json({ 'message': 'not authorised' })
+}
+
+export const CreateFeedbackSurvey = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if (user) {
+
+        const vendor = await FindVendor(user._id)
+        return res.json(vendor.customers)
 
     }
     return res.json({ 'message': 'not authorised' })

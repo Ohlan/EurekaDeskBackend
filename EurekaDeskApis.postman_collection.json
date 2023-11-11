@@ -797,10 +797,20 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Restaurant - Customers",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/customers",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"customers"
+							]
+						}
 					},
 					"response": []
 				},
@@ -824,15 +834,12 @@
 				},
 				{
 					"name": "Restaurant - Checkout",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"amar\",\n    \"phone\":\"9988998899\",\n    \"amount\":\"560\",\n    \"items\": [\n     {\n        \"_id\": \"651a9ea7d71bd495af30a110\",\n        \"unit\": 3\n     },\n     {\n        \"_id\": \"651a9ee3d71bd495af30a115\",\n        \"unit\": 1\n     }\n    ]\n}",
+							"raw": "{\n    \"name\": \"amar\",\n    \"phone\":\"9988998899\",\n    \"amount\":\"50\",\n    \"items\": [\n     {\n        \"_id\": \"651a9ea7d71bd495af30a110\",\n        \"unit\": 3\n     },\n     {\n        \"_id\": \"651a9ee3d71bd495af30a115\",\n        \"unit\": 1\n     }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -840,13 +847,31 @@
 							}
 						},
 						"url": {
-							"raw": "{{$randomLocale}}/vendor/order",
+							"raw": "{{OFA_BASE}}/vendor/order",
 							"host": [
-								"{{$randomLocale}}"
+								"{{OFA_BASE}}"
 							],
 							"path": [
 								"vendor",
 								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get Roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/roles",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"roles"
 							]
 						}
 					},
@@ -1062,7 +1087,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFmODY3NjRlZWI4ODY4YTRlMTVkNjciLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk3ODM2NDEzLCJleHAiOjE3MDU2MTI0MTN9.8WP20EmMehpXlPOiFosQiBt9ClN7J_6kOsB6w9tIL5I",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTRmMTg1NjQyZmRmOTdkNDEwMzRhOTMiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk5NjgyNDMxLCJleHAiOjE3MDc0NTg0MzF9.3lDx9i64K9H_fxpmxrIFaIsj88Q7kbAoNKxwdvdnzOk",
 						"type": "string"
 					}
 				]
@@ -1218,13 +1243,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{OFA_BASE}}/foods/653f4adf5a1ba056d3346291",
+							"raw": "{{OFA_BASE}}/foods/6549fe39086e9369c3dc0191",
 							"host": [
 								"{{OFA_BASE}}"
 							],
 							"path": [
 								"foods",
-								"653f4adf5a1ba056d3346291"
+								"6549fe39086e9369c3dc0191"
 							]
 						}
 					},
@@ -1425,7 +1450,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"_id\": \"653f6ea24959bb65c16b1307\",\n    \"unit\": 6\n}",
+							"raw": "{\n    \"_id\": \"654a2e9921b3ee7881adfb76\",\n    \"unit\": 8\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1551,7 +1576,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTRhMmVkODIxYjNlZTc4ODFhZGZiODEiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk5MzYwNTA0LCJleHAiOjE3MDcxMzY1MDR9.sI22ZVMekAzz_D5MxIJxNWC55Wz_4uefzp1SlAlDjm4",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTRmMTg1NjQyZmRmOTdkNDEwMzRhOTMiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6dHJ1ZSwiaWF0IjoxNjk5NjgyNDMxLCJleHAiOjE3MDc0NTg0MzF9.3lDx9i64K9H_fxpmxrIFaIsj88Q7kbAoNKxwdvdnzOk",
 						"type": "string"
 					}
 				]

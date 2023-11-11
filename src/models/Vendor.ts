@@ -18,6 +18,7 @@ interface VendorDoc extends Document {
     foods: any,
     categories: any,
     employee: any,
+    customers:any,
     lat: number;
     lng: number;
 }
@@ -46,6 +47,10 @@ const VendorSchema = new Schema({
     employee: [{
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'employee'
+    }],
+    customers: [{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'customer'
     }],
     lat: { type: Number},
     lng: {type: Number}
