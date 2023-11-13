@@ -15,6 +15,8 @@ import { validate } from 'class-validator';
 import path from 'path';
 import fs from 'fs';
 import qr from 'qrcode'
+import { CreateFeedbackInput } from '../dto/Feedback.dto';
+import { Feedback, FeedbackResponse } from '../models/Feedback';
 
 export const VendorLogin = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -317,8 +319,8 @@ export const DeleteFoodById = async (req: Request, res: Response, next: NextFunc
 
     if (user) {
         const food = await Food.findById(id)
-        if(food != null) {
-            await Food.deleteOne({_id: id})
+        if (food != null) {
+            await Food.deleteOne({ _id: id })
             return res.json('transaction successful')
         }
         return res.json("food not found")
@@ -622,8 +624,8 @@ export const DeleteTableById = async (req: Request, res: Response, next: NextFun
 
     if (user) {
         const table = await Table.findById(id)
-        if(table != null) {
-            await Table.deleteOne({_id: id})
+        if (table != null) {
+            await Table.deleteOne({ _id: id })
             return res.json('transaction successful')
         }
         return res.json("table not found")
@@ -836,12 +838,12 @@ export const CreateOrderAtCheckout = async (req: Request, res: Response, next: N
 
     const employee = req.user;
 
-     const { name, phone, amount, items } = <OrderCheckout>req.body;
+    const { name, phone, amount, items } = <OrderCheckout>req.body;
 
-    
-    if(employee){
 
-        const orderId = `${Math.floor(Math.random() * 89999)+ 1000}`;
+    if (employee) {
+
+        const orderId = `${Math.floor(Math.random() * 89999) + 1000}`;
 
         const cart = items;
 
@@ -854,16 +856,16 @@ export const CreateOrderAtCheckout = async (req: Request, res: Response, next: N
         const foods = await Food.find().where('_id').in(cart.map(item => item._id)).exec();
 
         foods.map(food => {
-            cart.map(({ _id, unit}) => {
-                if(food._id == _id){
+            cart.map(({ _id, unit }) => {
+                if (food._id == _id) {
                     vendorId = food.vendorId;
                     netAmount += (food.price * unit);
-                    cartItems.push({ food, unit})
+                    cartItems.push({ food, unit })
                 }
             })
         })
 
-        if(cartItems){
+        if (cartItems) {
 
             const currentOrder = await Order.create({
                 orderId: orderId,
@@ -876,7 +878,7 @@ export const CreateOrderAtCheckout = async (req: Request, res: Response, next: N
                 remarks: '',
                 deliveryId: '',
                 readyTime: 45,
-                orderType:"checkout",
+                orderType: "checkout",
                 customerName: name,
                 customerPhone: phone
             })
@@ -887,7 +889,7 @@ export const CreateOrderAtCheckout = async (req: Request, res: Response, next: N
 
     }
 
-    return res.status(400).json({ msg: 'Error while Creating Order'});
+    return res.status(400).json({ msg: 'Error while Creating Order' });
 }
 
 export const GetCustomers = async (req: Request, res: Response, next: NextFunction) => {
@@ -896,8 +898,8 @@ export const GetCustomers = async (req: Request, res: Response, next: NextFuncti
     if (user) {
 
         const vendor = await FindVendor(user._id)
-        let customer:any  = []
-        for(var i=0;i<vendor.customers.length;i++) {
+        let customer: any = []
+        for (var i = 0; i < vendor.customers.length; i++) {
             var obj = await Customer.findById(vendor.customers[i])
             customer.push(obj)
         }
@@ -909,11 +911,68 @@ export const GetCustomers = async (req: Request, res: Response, next: NextFuncti
 export const CreateFeedbackSurvey = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
+    const { name,
+        type,
+        question,
+        description,
+        showCommentBox,
+        redirectionLink,
+        acknowledgementMsg,
+        status,
+        deliveryMethod,
+        isActive } = plainToClass(CreateFeedbackInput, req.body);
+
+    const validationError = await validate(CreateFeedbackInput, { validationError: { target: true } })
+
+    if (validationError.length > 0) {
+        return res.status(400).json(validationError);
+    }
+
     if (user) {
 
         const vendor = await FindVendor(user._id)
-        return res.json(vendor.customers)
 
+        const feedback = await Feedback.create({
+            name: name,
+            vendorId: vendor.id,
+            type: type,
+            question:question,
+            description:description,
+            showCommentBox:showCommentBox,
+            redirectionLink: redirectionLink,
+            acknowledgementMsg:acknowledgementMsg,
+            status: status,
+            deliveryMethod: deliveryMethod,
+            isActive: isActive
+        })
+
+        return res.json(feedback)
+
+    }
+    return res.json({ 'message': 'not authorised' })
+}
+
+export const GetFeedbackSurvey = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if (user) {
+
+        const vendor = await FindVendor(user._id)
+        const feedbackSurveys = await Feedback.find({vendorId: vendor.id})
+        return res.json(feedbackSurveys)
+    }
+    return res.json({ 'message': 'not authorised' })
+}
+
+export const GetFeedbackResponse = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if (user) {
+
+        const feedback = await Feedback.findById(req.params.id)
+        const feedbackResponses = await FeedbackResponse.find({feedbackId: feedback.id})
+        
+        return res.json(feedbackResponses)
     }
     return res.json({ 'message': 'not authorised' })
 }

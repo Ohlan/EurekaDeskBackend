@@ -11,6 +11,8 @@ import Razorpay from 'razorpay';
 import { RAZORPAY_KEY_ID, RAZORPAY_SECRET } from '../config';
 import crypto from 'crypto';
 import { FindVendor, FindVendorById } from './AdminController';
+import { Feedback, FeedbackResponse } from '../models/Feedback';
+import { CreateResponseInput } from '../dto/Feedback.dto';
 
 export const CustomerSignUp = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -18,9 +20,9 @@ export const CustomerSignUp = async (req: Request, res: Response, next: NextFunc
 
     const { otp, expiry } = GenerateOtp();
 
-    const existingCustomer =  await Customer.findOne({ phone: phone});
-    
-    if(!existingCustomer){
+    const existingCustomer = await Customer.findOne({ phone: phone });
+
+    if (!existingCustomer) {
         await Customer.create({
             email: '',
             phone: phone,
@@ -36,9 +38,9 @@ export const CustomerSignUp = async (req: Request, res: Response, next: NextFunc
         })
     }
 
-    const result = await Customer.findOne({ phone: phone});
+    const result = await Customer.findOne({ phone: phone });
 
-    if(result){
+    if (result) {
         result.otp = otp
         result.otp_expiry = expiry
         await result.save()
@@ -50,16 +52,16 @@ export const CustomerSignUp = async (req: Request, res: Response, next: NextFunc
         // })
         // send OTP to customer
         await onRequestOTP(otp, phone);
-        return res.status(201).json({phone: phone, verified: result.verified})
+        return res.status(201).json({ phone: phone, verified: result.verified })
     }
 
-    return res.status(400).json({ msg: 'Error while logging in'});
+    return res.status(400).json({ msg: 'Error while logging in' });
 
 }
 
 // export const CustomerLogin = async (req: Request, res: Response, next: NextFunction) => {
 
-    
+
 //     const customerInputs = plainToClass(UserLoginInput, req.body);
 
 //     const validationError = await validate(customerInputs, {validationError: { target: true}})
@@ -72,7 +74,7 @@ export const CustomerSignUp = async (req: Request, res: Response, next: NextFunc
 //     const customer = await Customer.findOne({ email: email});
 //     if(customer){
 //         const validation = await ValidatePassword(password, customer.password, customer.salt);
-        
+
 //         if(validation){
 
 //             const signature = GenerateSignature({
@@ -97,9 +99,9 @@ export const CustomerVerify = async (req: Request, res: Response, next: NextFunc
 
     const customerInputs = plainToClass(UserVerifyInput, req.body);
 
-    const validationError = await validate(customerInputs, {validationError: { target: true}})
+    const validationError = await validate(customerInputs, { validationError: { target: true } })
 
-    if(validationError.length > 0){
+    if (validationError.length > 0) {
         return res.status(400).json(validationError);
     }
     // const customer = req.user;
@@ -107,78 +109,78 @@ export const CustomerVerify = async (req: Request, res: Response, next: NextFunc
     const { phone, otp } = customerInputs;
 
     // if(customer){
-        const profile = await Customer.findOne({phone: phone});
-        if(profile){
-            if(profile.otp === parseInt(otp) && profile.otp_expiry >= new Date()){
-                profile.verified = true;
+    const profile = await Customer.findOne({ phone: phone });
+    if (profile) {
+        if (profile.otp === parseInt(otp) && profile.otp_expiry >= new Date()) {
+            profile.verified = true;
 
-                const updatedCustomerResponse = await profile.save();
+            const updatedCustomerResponse = await profile.save();
 
-                const signature = await GenerateSignature({
-                    _id: updatedCustomerResponse._id,
-                    phone: updatedCustomerResponse.phone,
-                    verified: updatedCustomerResponse.verified
-                })
+            const signature = await GenerateSignature({
+                _id: updatedCustomerResponse._id,
+                phone: updatedCustomerResponse.phone,
+                verified: updatedCustomerResponse.verified
+            })
 
-                return res.status(200).json({
-                    signature,
-                    phone: updatedCustomerResponse.phone,
-                    verified: updatedCustomerResponse.verified
-                })
-            }
-            
+            return res.status(200).json({
+                signature,
+                phone: updatedCustomerResponse.phone,
+                verified: updatedCustomerResponse.verified
+            })
         }
+
+    }
 
     // }
 
-    return res.status(400).json({ msg: 'Unable to verify Customer'});
+    return res.status(400).json({ msg: 'Unable to verify Customer' });
 }
 
 export const RequestOtp = async (req: Request, res: Response, next: NextFunction) => {
 
-    const {phone} = req.body;
+    const { phone } = req.body;
 
     // if(customer){
 
-        const profile = await Customer.findOne({phone: phone});
+    const profile = await Customer.findOne({ phone: phone });
 
-        if(profile){
-            const { otp, expiry } = GenerateOtp();
-            profile.otp = otp;
-            profile.otp_expiry = expiry;
+    if (profile) {
+        const { otp, expiry } = GenerateOtp();
+        profile.otp = otp;
+        profile.otp_expiry = expiry;
 
-            await profile.save();
-            const sendCode = await onRequestOTP(otp, profile.phone);
+        await profile.save();
+        const sendCode = await onRequestOTP(otp, profile.phone);
 
-            if (!sendCode) {
-                return res.status(400).json({ message: 'Failed to verify your phone number' })
-            }
-
-            return res.status(200).json({ message: 'OTP sent to your registered Mobile Number!'})
-
+        if (!sendCode) {
+            return res.status(400).json({ message: 'Failed to verify your phone number' })
         }
+
+        return res.status(200).json({ message: 'OTP sent to your registered Mobile Number!' })
+
+    }
     // }
 
-    return res.status(400).json({ msg: 'Error with Requesting OTP'});
+    return res.status(400).json({ msg: 'Error with Requesting OTP' });
 }
 
 export const GetCustomerProfile = async (req: Request, res: Response, next: NextFunction) => {
 
     const customer = req.user;
- 
-    if(customer){
-        
-        const profile =  await Customer.findById(customer._id);
-        
-        if(profile){
-             
+
+    if (customer) {
+
+        const profile = await Customer.findById(customer._id);
+
+        if (profile) {
+
             return res.status(201).json(profile);
         }
 
-        return res.status(400).json({ msg: 'Please login to view profile'});
+        return res.status(400).json({ msg: 'Please login to view profile' });
 
     }
-    return res.status(400).json({ msg: 'Error while Fetching Profile'});
+    return res.status(400).json({ msg: 'Error while Fetching Profile' });
 
 }
 
@@ -189,53 +191,53 @@ export const EditCustomerProfile = async (req: Request, res: Response, next: Nex
 
     const customerInputs = plainToClass(EditCustomerProfileInput, req.body);
 
-    const validationError = await validate(customerInputs, {validationError: { target: true}})
+    const validationError = await validate(customerInputs, { validationError: { target: true } })
 
-    if(validationError.length > 0){
+    if (validationError.length > 0) {
         return res.status(400).json(validationError);
     }
 
     const { firstName, lastName, address, email } = customerInputs;
 
-    if(customer){
-        
-        const profile =  await Customer.findById(customer._id);
-        
-        if(profile){
+    if (customer) {
+
+        const profile = await Customer.findById(customer._id);
+
+        if (profile) {
             profile.firstName = firstName;
             profile.lastName = lastName;
             profile.address = address;
             profile.email = email
             const result = await profile.save()
-            
+
             return res.status(201).json(result);
         }
 
     }
-    return res.status(400).json({ msg: 'Error while Updating Profile'});
+    return res.status(400).json({ msg: 'Error while Updating Profile' });
 
 }
 
 /* ------------------- Delivery Notification --------------------- */
 
-const assignOrderForDelivery = async(orderId: string, vendorId: string) => {
+const assignOrderForDelivery = async (orderId: string, vendorId: string) => {
 
     // find the vendor
     const vendor = await Vendor.findById(vendorId);
-    if(vendor){
+    if (vendor) {
         const areaCode = vendor.pincode;
         const vendorLat = vendor.lat;
         const vendorLng = vendor.lng;
 
         //find the available Delivery person
-        const deliveryPerson = await DeliveryUser.find({ pincode: areaCode, verified: true, isAvailable: true});
-        if(deliveryPerson){
+        const deliveryPerson = await DeliveryUser.find({ pincode: areaCode, verified: true, isAvailable: true });
+        if (deliveryPerson) {
             // Check the nearest delivery person and assign the order
 
             const currentOrder = await Order.findById(orderId);
-            if(currentOrder){
+            if (currentOrder) {
                 //update Delivery ID
-                currentOrder.deliveryId = deliveryPerson[0]._id; 
+                currentOrder.deliveryId = deliveryPerson[0]._id;
                 await currentOrder.save();
 
                 //Notify to vendor for received new order firebase push notification
@@ -256,16 +258,16 @@ const assignOrderForDelivery = async(orderId: string, vendorId: string) => {
 
 /* ------------------- Order Section --------------------- */
 
-const validateTransaction = async(txnId: string) => {
-    
+const validateTransaction = async (txnId: string) => {
+
     const currentTransaction = await Transaction.findById(txnId);
 
-    if(currentTransaction){
-        if(currentTransaction.status.toLowerCase() !== 'failed'){
-            return {status: true, currentTransaction};
+    if (currentTransaction) {
+        if (currentTransaction.status.toLowerCase() !== 'failed') {
+            return { status: true, currentTransaction };
         }
     }
-    return {status: false, currentTransaction};
+    return { status: false, currentTransaction };
 }
 
 
@@ -274,21 +276,21 @@ export const CreateOrder = async (req: Request, res: Response, next: NextFunctio
 
     const customer = req.user;
 
-     const { txnId, amount, items } = <OrderInputs>req.body;
+    const { txnId, amount, items } = <OrderInputs>req.body;
 
-    
-    if(customer){
 
-        const { status, currentTransaction } =  await validateTransaction(txnId);
+    if (customer) {
 
-        if(!status){
-            return res.status(404).json({ message: 'Error while Creating Order!'})
+        const { status, currentTransaction } = await validateTransaction(txnId);
+
+        if (!status) {
+            return res.status(404).json({ message: 'Error while Creating Order!' })
         }
 
         const profile = await Customer.findById(customer._id);
 
 
-        const orderId = `${Math.floor(Math.random() * 89999)+ 1000}`;
+        const orderId = `${Math.floor(Math.random() * 89999) + 1000}`;
 
         const cart = items;
 
@@ -310,7 +312,7 @@ export const CreateOrder = async (req: Request, res: Response, next: NextFunctio
         //     })
         // })
 
-        if(cartItems){
+        if (cartItems) {
 
             const currentOrder = await Order.create({
                 orderId: orderId,
@@ -335,12 +337,12 @@ export const CreateOrder = async (req: Request, res: Response, next: NextFunctio
             currentTransaction.vendorId = vendorId;
             currentTransaction.orderId = orderId;
             currentTransaction.status = 'CONFIRMED'
-            
+
             await currentTransaction.save();
 
             await assignOrderForDelivery(currentOrder._id, vendorId);
 
-            const profileResponse =  await profile.save();
+            const profileResponse = await profile.save();
 
             return res.status(200).json(profileResponse);
 
@@ -348,51 +350,51 @@ export const CreateOrder = async (req: Request, res: Response, next: NextFunctio
 
     }
 
-    return res.status(400).json({ msg: 'Error while Creating Order'});
+    return res.status(400).json({ msg: 'Error while Creating Order' });
 }
 
 export const GetOrders = async (req: Request, res: Response, next: NextFunction) => {
 
     const customer = req.user;
-    
-    if(customer){
 
- 
+    if (customer) {
+
+
         const profile = await Customer.findById(customer._id).populate("orders");
-        if(profile){
+        if (profile) {
             return res.status(200).json(profile.orders);
         }
 
     }
 
-    return res.status(400).json({ msg: 'Orders not found'});
+    return res.status(400).json({ msg: 'Orders not found' });
 }
 
 
 export const GetOrderById = async (req: Request, res: Response, next: NextFunction) => {
 
     const orderId = req.params.id;
-    
-    if(orderId){
 
- 
+    if (orderId) {
+
+
         const order = await Order.findById(orderId).populate("items.food");
-        
-        if(order){
+
+        if (order) {
             return res.status(200).json(order);
         }
 
     }
 
-    return res.status(400).json({ msg: 'Order not found'});
+    return res.status(400).json({ msg: 'Order not found' });
 }
 
 /* ------------------- Cart Section --------------------- */
 export const AddToCart = async (req: Request, res: Response, next: NextFunction) => {
 
     const customer = req.user;
-    
-    if(customer){
+
+    if (customer) {
 
         const profile = await Customer.findById(customer._id);
         let cartItems = Array();
@@ -401,34 +403,34 @@ export const AddToCart = async (req: Request, res: Response, next: NextFunction)
 
         const food = await Food.findById(_id);
 
-        if(food){
+        if (food) {
 
-            if(profile != null){
+            if (profile != null) {
                 cartItems = profile.cart;
 
-                if(cartItems.length > 0){
+                if (cartItems.length > 0) {
                     // check and update
                     let existFoodItems = cartItems.filter((item) => item.food._id.toString() === _id);
-                    if(existFoodItems.length > 0){
-                        
+                    if (existFoodItems.length > 0) {
+
                         const index = cartItems.indexOf(existFoodItems[0]);
-                        
-                        if(unit > 0){
+
+                        if (unit > 0) {
                             cartItems[index] = { food, unit };
-                        }else{
+                        } else {
                             cartItems.splice(index, 1);
                         }
 
-                    }else{
-                        cartItems.push({ food, unit})
+                    } else {
+                        cartItems.push({ food, unit })
                     }
 
-                }else{
+                } else {
                     // add new Item
                     cartItems.push({ food, unit });
                 }
 
-                if(cartItems){
+                if (cartItems) {
                     profile.cart = cartItems as any;
                     const cartResult = await profile.save();
                     return res.status(200).json(cartResult.cart);
@@ -439,15 +441,15 @@ export const AddToCart = async (req: Request, res: Response, next: NextFunction)
 
     }
 
-    return res.status(404).json({ msg: 'Unable to add to cart!'});
+    return res.status(404).json({ msg: 'Unable to add to cart!' });
 }
 
 export const GetCart = async (req: Request, res: Response, next: NextFunction) => {
 
-      
+
     const customer = req.user;
-    
-    if(customer){
+
+    if (customer) {
         const profile = await Customer.findById(customer._id);
         const cart = profile.cart
         let cartResult: any = [];
@@ -460,26 +462,26 @@ export const GetCart = async (req: Request, res: Response, next: NextFunction) =
             }
             cartResult.push(enrichedCartItem)
         }
-        if(profile){
+        if (profile) {
             return res.status(200).json(cartResult);
         }
-    
+
     }
 
-    return res.status(400).json({message: 'Cart is Empty!'})
+    return res.status(400).json({ message: 'Cart is Empty!' })
 
 }
 
 export const DeleteCart = async (req: Request, res: Response, next: NextFunction) => {
 
-   
+
     const customer = req.user;
 
-    if(customer){
+    if (customer) {
 
         const profile = await Customer.findById(customer._id).populate('cart.food').exec();
 
-        if(profile != null){
+        if (profile != null) {
             profile.cart = [] as any;
             const cartResult = await profile.save();
 
@@ -488,7 +490,7 @@ export const DeleteCart = async (req: Request, res: Response, next: NextFunction
 
     }
 
-    return res.status(400).json({message: 'cart is Already Empty!'})
+    return res.status(400).json({ message: 'cart is Already Empty!' })
 
 }
 
@@ -498,35 +500,35 @@ export const VerifyOffer = async (req: Request, res: Response, next: NextFunctio
 
     const offerId = req.params.id;
     const customer = req.user;
-    
-    if(customer){
+
+    if (customer) {
 
         const appliedOffer = await Offer.findById(offerId);
-        
-        if(appliedOffer){
-            if(appliedOffer.isActive){
-                return res.status(200).json({ message: 'Offer is Valid', offer: appliedOffer});
+
+        if (appliedOffer) {
+            if (appliedOffer.isActive) {
+                return res.status(200).json({ message: 'Offer is Valid', offer: appliedOffer });
             }
         }
 
     }
 
-    return res.status(400).json({ msg: 'Offer is Not Valid'});
+    return res.status(400).json({ msg: 'Offer is Not Valid' });
 }
 
 export const CreatePayment = async (req: Request, res: Response, next: NextFunction) => {
 
     const customer = req.user;
 
-    const { amount, paymentMode, offerId} = req.body;
+    const { amount, paymentMode, offerId } = req.body;
 
     let payableAmount = Number(amount);
 
-    if(offerId){
+    if (offerId) {
 
         const appliedOffer = await Offer.findById(offerId);
 
-        if(appliedOffer.isActive){
+        if (appliedOffer.isActive) {
             payableAmount = (payableAmount - appliedOffer.offerAmount);
         }
     }
@@ -535,9 +537,9 @@ export const CreatePayment = async (req: Request, res: Response, next: NextFunct
     var instance = new Razorpay({ key_id: RAZORPAY_KEY_ID, key_secret: RAZORPAY_SECRET })
 
     var options = {
-    amount: Number(payableAmount * 100),  // amount in the smallest currency unit
-    currency: "INR",
-    receipt: "order_rcptid_11"
+        amount: Number(payableAmount * 100),  // amount in the smallest currency unit
+        currency: "INR",
+        receipt: "order_rcptid_11"
     }
 
     const order = await instance.orders.create(options);
@@ -555,7 +557,7 @@ export const CreatePayment = async (req: Request, res: Response, next: NextFunct
     })
 
     //return transaction
-    return res.status(200).json({order, transaction});
+    return res.status(200).json({ order, transaction });
 }
 
 export const VerifyPayment = async (req: Request, res: Response, next: NextFunction) => {
@@ -592,4 +594,61 @@ export const VerifyPayment = async (req: Request, res: Response, next: NextFunct
     } catch (error) {
         res.status(500).send(error);
     }
+}
+
+export const GetFeedbackFields = async (req: Request, res: Response, next: NextFunction) => {
+    const customer = req.user;
+
+    if (customer) {
+        const feedback = await Feedback.findOne(
+            {
+                status: "published",
+                deliveryMethod: "checkout",
+                isActive: true
+            })
+        if(feedback != null) {
+            return res.status(200).json({
+                "question": feedback.question,
+                "description": feedback.description,
+                "showCommentBox": feedback.showCommentBox,
+                "redirectionLink": feedback.redirectionLink,
+                "acknowledgementMsg": feedback.acknowledgementMsg
+            })
+        }
+        return res.status(400).json({ msg: 'Survey data doesn\'t exists' });
+    }
+    return res.status(400).json({ msg: 'User not logged in' });
+}
+
+export const CreateFeedbackResponse = async (req: Request, res: Response, next: NextFunction) => {
+
+    const customer = req.user;
+
+    const { feedbackId, rating, comments } = plainToClass(CreateResponseInput, req.body);
+
+    const validationError = await validate(CreateResponseInput, { validationError: { target: true } })
+
+    if (validationError.length > 0) {
+        return res.status(400).json(validationError);
+    }
+    if (customer) {
+
+        const profile = await Customer.findById(customer._id)
+        const response = await FeedbackResponse.create({
+            customerName: profile.firstName + profile.lastName,
+            customerPhone: profile.phone,
+            feedbackId: feedbackId,
+            rating: rating,
+            comments: comments
+        })
+
+        const feedback = await Feedback.findById(feedbackId)
+        feedback.responses.push(response)
+        await feedback.save()
+
+        return res.status(200).json(response);
+
+    }
+
+    return res.status(400).json({ msg: 'User not logged in' });
 }

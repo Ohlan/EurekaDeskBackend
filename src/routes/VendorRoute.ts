@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails, EditTax, AddTax, GetTaxes, DeleteTableById, DeleteFoodById, CreateOrder, CreateOrderAtCheckout, GetCustomers, GetRoles } from '../controllers';
+import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails, EditTax, AddTax, GetTaxes, DeleteTableById, DeleteFoodById, CreateOrder, CreateOrderAtCheckout, GetCustomers, GetRoles, CreateFeedbackSurvey, GetFeedbackSurvey, GetFeedbackResponse } from '../controllers';
 import { Authenticate } from '../middleware';
 import multer from 'multer';
 import fs from 'fs';
@@ -75,8 +75,10 @@ router.put('/tax/:taxId', EditTax)
 router.post('/order', CreateOrderAtCheckout)
 
 router.get('/customers', GetCustomers)
- 
 
+router.get('/feedback', GetFeedbackSurvey);
+router.get('/response/:id', GetFeedbackResponse);
+router.post('/feedback', CreateFeedbackSurvey);
 
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
  

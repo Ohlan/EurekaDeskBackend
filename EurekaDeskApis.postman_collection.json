@@ -876,6 +876,70 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Restaurant - Create Feedback Survey",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Customer loyalty survey\",\n    \"type\": \"test\",\n    \"question\": \"How likely are you gonaa recommend our restaurant to others?\",\n    \"description\": \"kindly leave comments\",\n    \"showCommentBox\": true,\n    \"redirectionLink\": \"ts.link.cc\",\n    \"acknowledgementMsg\": [\"Sorry for you misconvenience\",\"Thanks for telling us about your experience\",\"Glad you liked us\"],\n    \"status\": \"published\",\n    \"deliveryMethod\": \"checkout\",\n    \"isActive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/feedback",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"feedback"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get Feedback",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/feedback",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"feedback"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get Feedback Response",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/response/6551a643019249b8267e8b76",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"response",
+								"6551a643019249b8267e8b76"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -1565,6 +1629,51 @@
 							"path": [
 								"customer",
 								"verify-payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Create Feedback Response",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"feedbackId\": \"6551a643019249b8267e8b76\",\n    \"rating\": 4,\n    \"comments\": \"I liked the food very much!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/response",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"response"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Get feedback fields",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/customer/feedback",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"customer",
+								"feedback"
 							]
 						}
 					},

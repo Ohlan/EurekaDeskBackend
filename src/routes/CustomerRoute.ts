@@ -1,5 +1,5 @@
 import express from 'express';
-import { AddToCart, CreateOrder, CreatePayment, CustomerSignUp, CustomerVerify, DeleteCart, EditCustomerProfile, GetCart, GetCustomerProfile, GetOrderById, GetOrders, RequestOtp, VerifyOffer, VerifyPayment } from '../controllers';
+import { AddToCart, CreateFeedbackResponse, CreateOrder, CreatePayment, CustomerSignUp, CustomerVerify, DeleteCart, EditCustomerProfile, GetCart, GetCustomerProfile, GetFeedbackFields, GetOrderById, GetOrders, RequestOtp, VerifyOffer, VerifyPayment } from '../controllers';
 import { Authenticate } from '../middleware';
 
 const router = express.Router();
@@ -42,5 +42,9 @@ router.post('/verify-payment', VerifyPayment);
 router.post('/create-order', CreateOrder);
 router.get('/orders', GetOrders);
 router.get('/order/:id', GetOrderById)
+
+//Feedback
+router.post('/response', CreateFeedbackResponse)
+router.get('/feedback', GetFeedbackFields);
 
 export { router as CustomerRoute}
