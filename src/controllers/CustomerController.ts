@@ -608,6 +608,7 @@ export const GetFeedbackFields = async (req: Request, res: Response, next: NextF
             })
         if(feedback != null) {
             return res.status(200).json({
+                "id": feedback.id,
                 "question": feedback.question,
                 "description": feedback.description,
                 "showCommentBox": feedback.showCommentBox,

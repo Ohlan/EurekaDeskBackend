@@ -130,9 +130,9 @@ export const GetAllCategories = async (req: Request, res: Response, next: NextFu
 export const GetFoodsByCategory = async (req: Request, res: Response, next: NextFunction) => {
 
     const vendorId = req.params.id;
-    const categoryName = req.params.categoryName;
+    const categoryId = req.params.categoryId;
     
-    const foods = await Food.find({vendorId: vendorId, category: categoryName})
+    const foods = await Category.find({vendorId: vendorId, id: categoryId}).populate('allFoods');
  
     if(foods != null){
         return res.status(200).json(foods);

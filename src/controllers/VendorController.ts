@@ -269,6 +269,23 @@ export const GetCategories = async (req: Request, res: Response, next: NextFunct
     return res.json({ 'message': 'Categories not found!' })
 }
 
+export const GetFoodsByCategoryId = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if (user) {
+        const vendor = await FindVendor(user._id)
+        const categoryId = req.params.categoryId;
+        
+        const foods = await Category.findOne({vendorId: vendor.id, id: categoryId})
+    
+        if(foods != null){
+            return res.status(200).json(foods);
+        }
+        return res.status(404).json({ msg: 'data Not found!'});
+    }
+    return res.status(404).json({ msg: 'Not authorised!'});
+}
+
 export const AddFood = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
@@ -649,14 +666,15 @@ export const AddRole = async (req: Request, res: Response, next: NextFunction) =
 
     if (user) {
 
+        const vendor = await FindVendor(user._id)
         const { roleName, permissions } = <CreateRoleInput>req.body
 
-        if (await Role.findOne({ roleName: roleName }) != null) {
+        if (await Role.findOne({ roleName: roleName, vendorId: vendor.id }) != null) {
             return res.json('Role already exists');
         }
 
         const newRole = await Role.create({
-            vendorId: user._id,
+            vendorId: vendor.id,
             roleName: roleName,
             permissions: permissions,
         });

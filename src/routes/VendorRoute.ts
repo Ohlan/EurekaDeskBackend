@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails, EditTax, AddTax, GetTaxes, DeleteTableById, DeleteFoodById, CreateOrder, CreateOrderAtCheckout, GetCustomers, GetRoles, CreateFeedbackSurvey, GetFeedbackSurvey, GetFeedbackResponse } from '../controllers';
+import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails, EditTax, AddTax, GetTaxes, DeleteTableById, DeleteFoodById, CreateOrder, CreateOrderAtCheckout, GetCustomers, GetRoles, CreateFeedbackSurvey, GetFeedbackSurvey, GetFeedbackResponse, GetFoodsByCategoryId } from '../controllers';
 import { Authenticate } from '../middleware';
 import multer from 'multer';
 import fs from 'fs';
@@ -41,6 +41,7 @@ router.patch('/service', UpdateVendorService);
 
 router.post('/category', images, AddCategory);
 router.get('/category', GetCategories);
+router.get('/categories/:categoryId', GetFoodsByCategoryId)
 router.post('/food', images, AddFood);
 router.get('/food', GetFoods)
 router.delete('/food/:id', DeleteFoodById)

@@ -33,7 +33,7 @@ router.get('/foods/:id', GetAllFoods)
 router.get('/categories/:id', GetAllCategories)
 
 /* ------------------- Get Food by Category Name --------------------- */
-router.get('/categories/:id/:categoryName', GetFoodsByCategory)
+router.get('/categories/:id/:categoryId', GetFoodsByCategory)
 
 /* ------------------- Get Table urls by table Name --------------------- */
 router.get('/table/:id', GetTableUrls)
