@@ -428,7 +428,7 @@ export const GetOffers = async (req: Request, res: Response, next: NextFunction)
 
         const vendor = await FindVendor(user._id)
 
-        const offers = await Offer.find({vendorId: vendor.id, offerType:"GENERIC"})
+        const offers = await Offer.find({vendorId: vendor.id})
 
         if (offers) {
 
