@@ -319,7 +319,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"offerType\": \"seasonal\",\n    \"vendors\": [\"651a935d1e860590ca784d53\"],\n    \"title\": \"Hurray 50% off\",\n    \"description\": \"loyality give aways\",\n    \"minValue\": 0,\n    \"offerAmount\": 200,\n    \"promocode\": \"LOYAL200\",\n    \"promoType\": \"discount\",\n    \"bank\": [\"hdfc\", \"sbi\"],\n    \"pincode\": \"124501\",\n    \"isActive\": true\n}",
+							"raw": "{\n    \"offerType\": \"GENERIC\",\n    \"vendors\": [\"651a935d1e860590ca784d53\"],\n    \"title\": \"Hurray 50% off\",\n    \"description\": \"loyality give aways\",\n    \"minValue\": 0,\n    \"offerAmount\": 200,\n    \"promocode\": \"LOYAL200\",\n    \"promoType\": \"discount\",\n    \"bank\": [\"hdfc\", \"sbi\"],\n    \"pincode\": \"124501\",\n    \"isActive\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"

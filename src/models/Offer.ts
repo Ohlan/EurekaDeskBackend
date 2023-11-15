@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface OfferDoc extends Document {
    offerType: string;
-   vendors: [any];
+   vendorId: string;
    title: string;
    description: string;
    minValue: number;
@@ -22,9 +22,7 @@ export interface OfferDoc extends Document {
 const OfferSchema = new Schema({
 
     offerType: {type: String, require: true},
-    vendors: [
-        {type: Schema.Types.ObjectId, ref: 'vendor'},
-    ],
+    vendorId: {type: String, require: true},
     title: {type: String, require: true},
     description: {type: String},
     minValue: {type: Number, require: true},

@@ -422,40 +422,24 @@ export const ProcessOrder = async (req: Request, res: Response, next: NextFuncti
 
 export const GetOffers = async (req: Request, res: Response, next: NextFunction) => {
 
-
     const user = req.user;
 
     if (user) {
-        let currentOffer = Array();
 
-        const offers = await Offer.find().populate('vendors');
+        const vendor = await FindVendor(user._id)
+
+        const offers = await Offer.find({vendorId: vendor.id, offerType:"GENERIC"})
 
         if (offers) {
 
-
-            offers.map(item => {
-
-                if (item.vendors) {
-                    item.vendors.map(vendor => {
-                        if (vendor._id.toString() === user._id) {
-                            currentOffer.push(item);
-                        }
-                    })
-                }
-
-                if (item.offerType === "GENERIC") {
-                    currentOffer.push(item)
-                }
-
-            })
-
+            return res.status(200).json(offers)
         }
 
-        return res.status(200).json(currentOffer);
+        return res.status(200).json("Offers not available");
 
     }
 
-    return res.json({ message: 'Offers Not available' });
+    return res.json({ message: 'Not authorised' });
 }
 
 
@@ -478,13 +462,15 @@ export const AddOffer = async (req: Request, res: Response, next: NextFunction) 
                 offerType,
                 offerAmount,
                 pincode,
+                promocode,
                 promoType,
                 startValidity,
                 endValidity,
                 bank,
+                bins,
                 isActive,
                 minValue,
-                vendor: [vendor]
+                vendorId: vendor.id
             })
 
             console.log(offer);
@@ -522,9 +508,11 @@ export const EditOffer = async (req: Request, res: Response, next: NextFunction)
                     currentOffer.offerType = offerType,
                     currentOffer.offerAmount = offerAmount,
                     currentOffer.pincode = pincode,
+                    currentOffer.promocode = promocode,
                     currentOffer.promoType = promoType,
                     currentOffer.startValidity = startValidity,
                     currentOffer.endValidity = endValidity,
+                    currentOffer.bins = bins,
                     currentOffer.bank = bank,
                     currentOffer.isActive = isActive,
                     currentOffer.minValue = minValue;
