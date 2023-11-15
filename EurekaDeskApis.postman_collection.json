@@ -1401,6 +1401,24 @@
 						"header": []
 					},
 					"response": []
+				},
+				{
+					"name": "Foods - Top rated foods",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/top-foods/6549fe39086e9369c3dc0191",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"top-foods",
+								"6549fe39086e9369c3dc0191"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {

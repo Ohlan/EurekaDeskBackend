@@ -1,5 +1,5 @@
 import express from 'express';
-import { GetAllCategories, GetAllFoods, GetAvailableOffers, GetFoodAvailability, GetFoodById, GetFoodsByCategory, GetFoodsIn30Min, GetTableUrls, GetTopRestaurants, RestaurantById, SearchFoods } from '../controllers';
+import { GetAllCategories, GetAllFoods, GetAvailableOffers, GetFoodAvailability, GetFoodById, GetFoodsByCategory, GetFoodsIn30Min, GetTableUrls, GetTopFoods, GetTopRestaurants, RestaurantById, SearchFoods } from '../controllers';
 
 const router = express.Router();
 
@@ -28,6 +28,9 @@ router.get('/foods/:id/:foodId', GetFoodById)
 
 /* ------------------- Get All food --------------------- */
 router.get('/foods/:id', GetAllFoods)
+
+/* ------------------- Top Food --------------------- */
+router.get('/top-foods/:id', GetTopFoods)
 
 /* ------------------- Get All Categories --------------------- */
 router.get('/categories/:id', GetAllCategories)

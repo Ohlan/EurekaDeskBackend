@@ -156,3 +156,16 @@ export const GetTableUrls = async (req: Request, res: Response, next: NextFuncti
     
     return res.status(404).json({ msg: 'data Not found!'});
 }
+
+export const GetTopFoods = async (req: Request, res: Response, next: NextFunction) => {
+
+    const id = req.params.id;
+    
+    const result = await Food.find({ vendorId: id}).sort([['rating', 'descending']]).limit(10)
+
+    if(result.length > 0){
+        return res.status(200).json(result);
+    }
+    
+    return res.status(404).json({ msg: 'data Not found!'});
+}
