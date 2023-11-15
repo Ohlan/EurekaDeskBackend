@@ -276,12 +276,12 @@ export const GetFoodsByCategoryId = async (req: Request, res: Response, next: Ne
         const vendor = await FindVendor(user._id)
         const categoryId = req.params.categoryId;
         
-        const foods = await Category.findOne({vendorId: vendor.id, id: categoryId})
-    
-        if(foods != null){
+        const categoryData = await Category.findOne({vendorId: vendor.id, _id: categoryId}).populate('allFoods');
+ 
+        if(categoryData != null){
+            const foods = await categoryData.allFoods
             return res.status(200).json(foods);
         }
-        return res.status(404).json({ msg: 'data Not found!'});
     }
     return res.status(404).json({ msg: 'Not authorised!'});
 }

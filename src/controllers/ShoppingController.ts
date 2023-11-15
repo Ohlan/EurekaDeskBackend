@@ -132,9 +132,10 @@ export const GetFoodsByCategory = async (req: Request, res: Response, next: Next
     const vendorId = req.params.id;
     const categoryId = req.params.categoryId;
     
-    const foods = await Category.find({vendorId: vendorId, id: categoryId}).populate('allFoods');
+    const categoryData = await Category.findOne({vendorId: vendorId, _id: categoryId}).populate('allFoods');
  
-    if(foods != null){
+    if(categoryData != null){
+        const foods = await categoryData.allFoods
         return res.status(200).json(foods);
     }
     return res.status(404).json({ msg: 'data Not found!'});
