@@ -23,7 +23,7 @@ export default async(app: Application) => {
         optionsSuccessStatus: 200
     }
 
-    app.use(cors(corsOptions))
+    app.use(cors())
  
     const imagePath = path.join(__dirname,'../../images');
     const qrCodeDirectory = path.join(__dirname, '../../qr-codes');
