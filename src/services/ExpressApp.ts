@@ -19,7 +19,7 @@ export default async(app: Application) => {
     app.use(express.json());
 
     var corsOptions = {
-        origin: FRONTEND,
+        origin: '*',
         optionsSuccessStatus: 200
     }
 

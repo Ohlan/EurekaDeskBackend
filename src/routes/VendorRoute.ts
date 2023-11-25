@@ -3,12 +3,12 @@ import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOff
 import { Authenticate } from '../middleware';
 import multer from 'multer';
 import fs from 'fs';
+import path from 'path';
 
 const router = express.Router();
 
 // multer configuration
-
-const directory = 'images';
+const directory = path.join(__dirname, '../../images');
 
 if (!fs.existsSync(directory)) {
   fs.mkdirSync(directory);
