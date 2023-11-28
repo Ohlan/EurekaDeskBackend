@@ -169,3 +169,16 @@ export const GetTopFoods = async (req: Request, res: Response, next: NextFunctio
     
     return res.status(404).json({ msg: 'data Not found!'});
 }
+
+export const GetSearchResults = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const searchQuery = req.params.query as string;
+        const results = await Food.find({
+            $text: { $search: searchQuery },
+            vendorId: '65605d8bcf70a80dc502a6b4'
+        });
+        return res.json(results);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "325fa921-0e6c-4346-a515-b05212a65b03",
+		"_postman_id": "6f84ec0e-167a-4504-b99b-1a391ee75e26",
 		"name": "EurekaDeskApis",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29921401"
@@ -201,7 +201,7 @@
 								},
 								{
 									"key": "category",
-									"value": "cocktails",
+									"value": "cocktail",
 									"type": "text"
 								},
 								{
@@ -222,7 +222,7 @@
 								{
 									"key": "images",
 									"type": "file",
-									"src": "/Users/pushpendrakumar/Documents/images/item1.jpeg"
+									"src": "/Users/pushpendrakumar/Documents/EurekaDesk/EurekaDeskBackend/images/20231104091820170Z_top-view-table-full-delicious-food-composition_23-2149141353.avif"
 								}
 							]
 						},
@@ -392,7 +392,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"tableNumber\": \"3\",\n    \"capacity\": \"3\"\n}",
+							"raw": "{\n    \"tableNumber\": \"1\",\n    \"capacity\": \"5\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -467,7 +467,7 @@
 							"formdata": [
 								{
 									"key": "name",
-									"value": "cocktails",
+									"value": "cocktail",
 									"type": "text"
 								},
 								{
@@ -966,7 +966,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTQ5ZmUzOTA4NmU5MzY5YzNkYzAxOTUiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6ZmFsc2UsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY5OTM0ODAzMSwiZXhwIjoxNzA3MTI0MDMxfQ.GBC5yQbTVbamAhr5dx5b8XYuDJP3tSgxKQt_R3A82XE",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTYwNWQ4YmNmNzBhOGZiYTIwMmE2YjgiLCJwaG9uZSI6Ijk3Mjk0NzAyMjEiLCJ2ZXJpZmllZCI6ZmFsc2UsInJvbGUiOiJhZG1pbiIsImlhdCI6MTcwMDgxNTM4MywiZXhwIjoxNzA4NTkxMzgzfQ._oZdeocSliJT0qRY7IMd_LXG-fLfdRs4AaRAcDTi6kU",
 						"type": "string"
 					}
 				]
@@ -1398,7 +1398,10 @@
 					"name": "Food - Get table urls",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -1419,6 +1422,24 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Foods - Search by text",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/search-food/blue lagoon",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"search-food",
+								"blue lagoon"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {
@@ -1426,7 +1447,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTFhOGNlODFlODYwNTkwY2E3ODRkNDciLCJlbWFpbCI6InB1c2hwZW5kZXJvaGxhbkBnbWFpbC5jb20iLCJ2ZXJpZmllZCI6ZmFsc2UsImlhdCI6MTY5NjIzODgyNiwiZXhwIjoxNzA0MDE0ODI2fQ.Zm5myZ6f6irQZ50IWEGIkX31jyN6fCFBjnSOyCE5SiQ",
+						"value": "",
 						"type": "string"
 					}
 				]

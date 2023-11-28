@@ -75,6 +75,7 @@ const CategorySchema = new Schema({
     timestamps: true
 });
 
+FoodSchema.index({ name: 'text', description: 'text', foodType: 'text', category: 'text' });
 
 const Category = mongoose.model<CategoryDoc>('category', CategorySchema);
 

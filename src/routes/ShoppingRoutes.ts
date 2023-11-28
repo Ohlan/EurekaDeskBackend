@@ -1,5 +1,5 @@
 import express from 'express';
-import { GetAllCategories, GetAllFoods, GetAvailableOffers, GetFoodAvailability, GetFoodById, GetFoodsByCategory, GetFoodsIn30Min, GetTableUrls, GetTopFoods, GetTopRestaurants, RestaurantById, SearchFoods } from '../controllers';
+import { GetAllCategories, GetAllFoods, GetAvailableOffers, GetFoodAvailability, GetFoodById, GetFoodsByCategory, GetFoodsIn30Min, GetSearchResults, GetTableUrls, GetTopFoods, GetTopRestaurants, RestaurantById, SearchFoods } from '../controllers';
 
 const router = express.Router();
 
@@ -15,10 +15,11 @@ router.get('/foods-in-30-min/:pincode', GetFoodsIn30Min)
 /* ------------------- Search Foods --------------------- */
 router.get('/search/:pincode', SearchFoods)
 
+/* ------------------- Search Foods --------------------- */
+router.get('/search-food/:query', GetSearchResults)
 
 /* ------------------- Search Offers --------------------- */
 router.get('/offers/:pincode', GetAvailableOffers)
-
 
 /* ------------------- Find Restaurant by ID --------------------- */
 router.get('/restaurant/:id', RestaurantById)
