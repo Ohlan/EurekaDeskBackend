@@ -959,6 +959,63 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Restaurant - Delete category by Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/category/65605dbccf70a88bd502a6cd",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"category",
+								"65605dbccf70a88bd502a6cd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get Other Foods",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/other/foods",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"other",
+								"foods"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurant - Get Permissions by role id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{OFA_BASE}}/vendor/role/656062aecf70a859ea02a739",
+							"host": [
+								"{{OFA_BASE}}"
+							],
+							"path": [
+								"vendor",
+								"role",
+								"656062aecf70a859ea02a739"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"auth": {

@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails, EditTax, AddTax, GetTaxes, DeleteTableById, DeleteFoodById, CreateOrder, CreateOrderAtCheckout, GetCustomers, GetRoles, CreateFeedbackSurvey, GetFeedbackSurvey, GetFeedbackResponse, GetFoodsByCategoryId } from '../controllers';
+import { AddCategory, AddEmployee, AddFood, AddOffer, AddRole, AddTable, EditOffer, EmployeeLogin, EmployeeVerify, GetCategories, GetAllEmployee, GetFoods, GetOffers, GetOrderDetails, GetOrders, GetPermissions, GetTables, GetVendorProfile, ProcessOrder, UpdateTable, UpdateVendorCoverImage, UpdateVendorProfile, UpdateVendorService, VendorLogin, EditRole, UpdateEmployeeDetails, EditTax, AddTax, GetTaxes, DeleteTableById, DeleteFoodById, CreateOrder, CreateOrderAtCheckout, GetCustomers, GetRoles, CreateFeedbackSurvey, GetFeedbackSurvey, GetFeedbackResponse, GetFoodsByCategoryId, DeleteCategoryById, GetOtherCategoryFood, GetPermissionsByRole } from '../controllers';
 import { Authenticate } from '../middleware';
 import multer from 'multer';
 import fs from 'fs';
@@ -42,6 +42,9 @@ router.patch('/service', UpdateVendorService);
 router.post('/category', images, AddCategory);
 router.get('/category', GetCategories);
 router.get('/categories/:categoryId', GetFoodsByCategoryId)
+router.delete('/category/:id', DeleteCategoryById)
+router.get('/other/foods', GetOtherCategoryFood)
+
 router.post('/food', images, AddFood);
 router.get('/food', GetFoods)
 router.delete('/food/:id', DeleteFoodById)
@@ -63,6 +66,7 @@ router.post('/role', AddRole)
 router.patch('/role', EditRole)
 router.get('/roles', GetRoles)
 router.get('/permissions', GetPermissions)
+router.get('/role/:id', GetPermissionsByRole)
 
 //Offers
 router.get('/offers', GetOffers);

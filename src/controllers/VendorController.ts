@@ -223,6 +223,11 @@ export const AddCategory = async (req: Request, res: Response, next: NextFunctio
 
         const { name, description } = <CreateCategoryInput>req.body;
 
+        const flag = await Category.findOne({name: name})
+        if(flag != null) {
+            return res.status(500).json({ 'message': 'category already exists' });
+        }
+
         if (user) {
 
             const vendor = await FindVendor(user._id);
@@ -269,6 +274,40 @@ export const GetCategories = async (req: Request, res: Response, next: NextFunct
     return res.json({ 'message': 'Categories not found!' })
 }
 
+export const DeleteCategoryById = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    const id = req.params.id;
+
+    if (user) {
+        const category = await Category.findById(id)
+        if (category != null) {
+            await Category.deleteOne({ _id: id })
+            const foods = await Food.find({category: category.name})
+            for(var i=0;i<foods.length;i++) {
+                foods[i].category = "";
+                await foods[i].save()
+            }
+            return res.json('transaction successful')
+        }
+        return res.json("Category not found")
+    }
+    return res.json({ 'message': 'not authorised!' })
+}
+
+export const GetOtherCategoryFood = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+
+    if (user) {
+        const vendor = await FindVendor(user._id)
+        
+        const foods = await Food.findOne({category:"", vendorId: vendor.id})
+        if(foods != null){
+            return res.status(200).json(foods);
+        }
+    }
+    return res.status(404).json({ msg: 'Not authorised!'});
+}
+
 export const GetFoodsByCategoryId = async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
 
@@ -292,6 +331,11 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
         const user = req.user;
 
         const { name, description, category, foodType, readyTime, price } = <CreateFoodInput>req.body;
+
+        const flag = await Food.findOne({name: name})
+        if(flag != null) {
+            return res.status(500).json({ 'message': 'food already exists' });
+        }
 
         if (user) {
 
@@ -644,6 +688,17 @@ export const GetPermissions = async (req: Request, res: Response, next: NextFunc
     if (user) {
         const permisions = Permissions
         return res.json({ permissions: permisions });
+    }
+
+    return res.json({ 'message': 'Permissions not found' })
+}
+
+export const GetPermissionsByRole = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    const roleId = req.params.id
+    if (user) {
+        const role = await Role.findById(roleId)
+        return res.json({ permissions: role.permissions });
     }
 
     return res.json({ 'message': 'Permissions not found' })
