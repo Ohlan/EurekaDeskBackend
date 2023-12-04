@@ -221,16 +221,16 @@ export const AddCategory = async (req: Request, res: Response, next: NextFunctio
     try {
         const user = req.user;
 
+        const vendor = await FindVendor(user._id);
+
         const { name, description } = <CreateCategoryInput>req.body;
 
-        const flag = await Category.findOne({name: name})
+        const flag = await Category.findOne({name: name, vendorId: vendor.id})
         if(flag != null) {
             return res.status(500).json({ 'message': 'category already exists' });
         }
 
         if (user) {
-
-            const vendor = await FindVendor(user._id);
 
             if (vendor !== null) {
 
@@ -330,16 +330,16 @@ export const AddFood = async (req: Request, res: Response, next: NextFunction) =
     try {
         const user = req.user;
 
+        const vendor = await FindVendor(user._id);
+
         const { name, description, category, foodType, readyTime, price } = <CreateFoodInput>req.body;
 
-        const flag = await Food.findOne({name: name})
+        const flag = await Food.findOne({name: name, vendorId:vendor.id})
         if(flag != null) {
             return res.status(500).json({ 'message': 'food already exists' });
         }
 
         if (user) {
-
-            const vendor = await FindVendor(user._id);
 
             if (vendor !== null) {
 
